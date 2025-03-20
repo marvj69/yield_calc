@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asphalt Yield Calculator</title>
+    <style>
+        :root {
+            --primary: #2b5797;
+            --secondary: #4472c4;
+            --accent: #ed7d31;
+            --light: #f4f4f4;
+            --dark: #333;
+            --success: #5cb85c;
+            --danger: #d9534f;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        h1 {
+            color: var(--primary);
+        }
+        
+        .date-display {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin: 10px 0;
+        }
+        
+        .input-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: var(--secondary);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .button-group button {
+            flex: 1;
+        }
+        
+        .export-btn {
+            background-color: var(--success);
+        }
+        
+        .export-btn:hover {
+            background-color: #4cae4c;
+        }
+        
+        .reset-btn {
+            background-color: var(--danger);
+        }
+        
+        .reset-btn:hover {
+            background-color: #c9302c;
+        }
+        
+        .results-section {
+            margin-top: 20px;
+        }
+        
+        .current-results, .total-results {
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .result-label {
+            font-weight: bold;
+        }
+        
+        .truck-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        
+        .truck-data-table th, .truck-data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .truck-data-table th {
+            background-color: var(--primary);
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        .truck-data-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .truck-data-table tr:hover {
+            background-color: #e2e2e2;
+        }
+        
+        .truck-data-table tfoot {
+            font-weight: bold;
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .truck-data-table tfoot td {
+            border-top: 2px solid var(--primary);
+        }
+        
+        @media (min-width: 768px) {
+            .input-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .tab-button {
+            padding: 10px 20px;
+            background-color: #e2e2e2;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            font-weight: bold;
+        }
+        
+        .tab-button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 0 5px 5px 5px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .data-table-container {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Asphalt Yield Calculator</h1>
+            <div class="date-display" id="currentDate">Date: </div>
+        </header>
+        
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" data-tab="calculator">Calculator</button>
+                <button class="tab-button" data-tab="data">Data History</button>
+            </div>
+            
+            <div class="tab-content active" id="calculator">
+                <div class="input-section">
+                    <h2>Truck Information</h2>
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label for="truckNumber">Truck Number:</label>
+                            <input type="text" id="truckNumber" placeholder="Enter truck identifier">
+                        </div>
+                        <div class="form-group">
+                            <label for="truckTonnage">Truck Tonnage (tons):</label>
+                            <input type="number" id="truckTonnage" step="0.01" placeholder="Enter tonnage in tons">
+                        </div>
+                        <div class="form-group">
+                            <label for="startValue">Start Value (feet):</label>
+                            <input type="number" id="startValue" step="0.01" placeholder="Enter start value">
+                        </div>
+                        <div class="form-group">
+                            <label for="endValue">End Value (feet):</label>
+                            <input type="number" id="endValue" step="0.01" placeholder="Enter end value">
+                        </div>
+                        <div class="form-group">
+                            <label for="width">Width (feet):</label>
+                            <input type="number" id="width" step="0.01" placeholder="Enter width in feet">
+                        </div>
+                        <div class="form-group">
+                            <label for="calculatedLength">Calculated Length (feet):</label>
+                            <input type="number" id="calculatedLength" readonly>
+                        </div>
+                    </div>
+                    <button id="calculateButton">Calculate Yield</button>
+                </div>
+                
+                <div class="results-section">
+                    <div class="current-results">
+                        <h2>Current Truck Results</h2>
+                        <div class="result-row">
+                            <span class="result-label">Area (square yards):</span>
+                            <span id="areaResult">-</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Weight (pounds):</span>
+                            <span id="weightResult">-</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Yield (pounds per square yard):</span>
+                            <span id="yieldResult">-</span>
+                        </div>
+                        <button id="saveTruckButton" disabled>Save Truck Data</button>
+                    </div>
+                    
+                    <div class="total-results">
+                        <h2>Day Summary</h2>
+                        <div class="result-row">
+                            <span class="result-label">Total Trucks:</span>
+                            <span id="totalTrucks">0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Total Area (square yards):</span>
+                            <span id="totalArea">0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Total Weight (pounds):</span>
+                            <span id="totalWeight">0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Average Yield (pounds per square yard):</span>
+                            <span id="averageYield">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="export-btn" id="exportButton">Export to CSV</button>
+                    <button class="reset-btn" id="resetButton">Start New Day</button>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="data">
+                <h2>Today's Trucks</h2>
+                <div class="data-table-container">
+                    <table class="truck-data-table" id="truckDataTable">
+                        <thead>
+                            <tr>
+                                <th>Truck #</th>
+                                <th>Start Value (ft)</th>
+                                <th>End Value (ft)</th>
+                                <th>Length (ft)</th>
+                                <th>Width (ft)</th>
+                                <th>Area (sq yd)</th>
+                                <th>Tonnage</th>
+                                <th>Weight (lbs)</th>
+                                <th>Yield (lbs/sq yd)</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="truckDataBody">
+                            <!-- Truck data will be populated here -->
+                        </tbody>
+                        <tfoot id="truckDataFooter">
+                            <tr>
+                                <td>Totals:</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td id="totalLength">0.00</td>
+                                <td>-</td>
+                                <td id="totalAreaFoot">0.00</td>
+                                <td id="totalTonnageFoot">0.00</td>
+                                <td id="totalWeightFoot">0.00</td>
+                                <td id="avgYieldFoot">0.00</td>
+                                <td>-</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let dailyData = [];
+        let currentDate = new Date();
+        
+        // Constants
+        const TONS_TO_POUNDS = 2000;
+        const SQ_FT_TO_SQ_YD = 9;
+        
+        // Elements
+        const dateDisplay = document.getElementById('currentDate');
+        const truckNumberInput = document.getElementById('truckNumber');
+        const truckTonnageInput = document.getElementById('truckTonnage');
+        const startValueInput = document.getElementById('startValue');
+        const endValueInput = document.getElementById('endValue');
+        const widthInput = document.getElementById('width');
+        const calculatedLengthInput = document.getElementById('calculatedLength');
+        const calculateButton = document.getElementById('calculateButton');
+        const saveTruckButton = document.getElementById('saveTruckButton');
+        const exportButton = document.getElementById('exportButton');
+        const resetButton = document.getElementById('resetButton');
+        const areaResult = document.getElementById('areaResult');
+        const weightResult = document.getElementById('weightResult');
+        const yieldResult = document.getElementById('yieldResult');
+        const totalTrucks = document.getElementById('totalTrucks');
+        const totalArea = document.getElementById('totalArea');
+        const totalWeight = document.getElementById('totalWeight');
+        const averageYield = document.getElementById('averageYield');
+        const truckDataBody = document.getElementById('truckDataBody');
+        const totalLength = document.getElementById('totalLength');
+        const totalAreaFoot = document.getElementById('totalAreaFoot');
+        const totalTonnageFoot = document.getElementById('totalTonnageFoot');
+        const totalWeightFoot = document.getElementById('totalWeightFoot');
+        const avgYieldFoot = document.getElementById('avgYieldFoot');
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Initialize date display
+        updateDateDisplay();
+        
+        // Load saved data
+        loadData();
+        
+        // Event listeners
+        startValueInput.addEventListener('input', updateLength);
+        endValueInput.addEventListener('input', updateLength);
+        calculateButton.addEventListener('click', calculateYield);
+        saveTruckButton.addEventListener('click', saveTruckData);
+        exportButton.addEventListener('click', exportToCSV);
+        resetButton.addEventListener('click', startNewDay);
+        
+        // Tab navigation
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Update active button
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Update active content
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Functions
+        function updateDateDisplay() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateDisplay.textContent = `Date: ${currentDate.toLocaleDateString(undefined, options)}`;
+        }
+        
+        function updateLength() {
+            const startValue = parseFloat(startValueInput.value) || 0;
+            const endValue = parseFloat(endValueInput.value) || 0;
+            
+            if (startValue && endValue) {
+                calculatedLengthInput.value = Math.abs(endValue - startValue).toFixed(2);
+            }
+        }
+        
+        function calculateYield() {
+            // Get values
+            const length = parseFloat(calculatedLengthInput.value) || 0;
+            const width = parseFloat(widthInput.value) || 0;
+            const tonnage = parseFloat(truckTonnageInput.value) || 0;
+            
+            if (length <= 0 || width <= 0 || tonnage <= 0) {
+                alert('Please enter valid values for all fields');
+                return;
+            }
+            
+            // Calculate area in square yards
+            const areaInSqFt = length * width;
+            const areaInSqYd = areaInSqFt / SQ_FT_TO_SQ_YD;
+            
+            // Convert tonnage to pounds
+            const weightInPounds = tonnage * TONS_TO_POUNDS;
+            
+            // Calculate yield
+            const yield = weightInPounds / areaInSqYd;
+            
+            // Display results
+            areaResult.textContent = areaInSqYd.toFixed(2);
+            weightResult.textContent = weightInPounds.toFixed(2);
+            yieldResult.textContent = yield.toFixed(2);
+            
+            // Enable save button
+            saveTruckButton.disabled = false;
+        }
+        
+        function saveTruckData() {
+            // Validate truck number
+            if (!truckNumberInput.value.trim()) {
+                alert('Please enter a truck identifier');
+                return;
+            }
+            
+            // Get calculated values
+            const truckNumber = truckNumberInput.value.trim();
+            const startValue = parseFloat(startValueInput.value);
+            const endValue = parseFloat(endValueInput.value);
+            const length = parseFloat(calculatedLengthInput.value);
+            const width = parseFloat(widthInput.value);
+            const area = parseFloat(areaResult.textContent);
+            const tonnage = parseFloat(truckTonnageInput.value);
+            const weight = parseFloat(weightResult.textContent);
+            const yield = parseFloat(yieldResult.textContent);
+            const timestamp = new Date().toLocaleTimeString();
+            
+            // Create data object
+            const truckData = {
+                truckNumber,
+                startValue,
+                endValue,
+                length,
+                width,
+                area,
+                tonnage,
+                weight,
+                yield,
+                timestamp,
+                date: currentDate.toLocaleDateString()
+            };
+            
+            // Add to daily data
+            dailyData.push(truckData);
+            
+            // Update table
+            updateTruckTable();
+            
+            // Update totals
+            updateTotals();
+            
+            // Save to local storage
+            saveData();
+            
+            // Reset form for next truck
+            saveTruckButton.disabled = true;
+            truckNumberInput.value = '';
+            truckTonnageInput.value = '';
+            startValueInput.value = '';
+            endValueInput.value = '';
+            widthInput.value = '';
+            calculatedLengthInput.value = '';
+            areaResult.textContent = '-';
+            weightResult.textContent = '-';
+            yieldResult.textContent = '-';
+            
+            // Focus on truck number for next entry
+            truckNumberInput.focus();
+        }
+        
+        function updateTruckTable() {
+            // Clear table
+            truckDataBody.innerHTML = '';
+            
+            // Add rows for each truck
+            dailyData.forEach(truck => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${truck.truckNumber}</td>
+                    <td>${truck.startValue.toFixed(2)}</td>
+                    <td>${truck.endValue.toFixed(2)}</td>
+                    <td>${truck.length.toFixed(2)}</td>
+                    <td>${truck.width.toFixed(2)}</td>
+                    <td>${truck.area.toFixed(2)}</td>
+                    <td>${truck.tonnage.toFixed(2)}</td>
+                    <td>${truck.weight.toFixed(2)}</td>
+                    <td>${truck.yield.toFixed(2)}</td>
+                    <td>${truck.timestamp}</td>
+                `;
+                
+                truckDataBody.appendChild(row);
+            });
+            
+            // Update footer totals
+            updateFooterTotals();
+        }
+        
+        function updateFooterTotals() {
+            // Calculate column totals and averages
+            const totalLengthValue = dailyData.reduce((sum, truck) => sum + truck.length, 0);
+            const totalAreaValue = dailyData.reduce((sum, truck) => sum + truck.area, 0);
+            const totalTonnageValue = dailyData.reduce((sum, truck) => sum + truck.tonnage, 0);
+            const totalWeightValue = dailyData.reduce((sum, truck) => sum + truck.weight, 0);
+            const avgYieldValue = totalWeightValue / totalAreaValue || 0;
+            
+            // Update footer display
+            totalLength.textContent = totalLengthValue.toFixed(2);
+            totalAreaFoot.textContent = totalAreaValue.toFixed(2);
+            totalTonnageFoot.textContent = totalTonnageValue.toFixed(2);
+            totalWeightFoot.textContent = totalWeightValue.toFixed(2);
+            avgYieldFoot.textContent = avgYieldValue.toFixed(2);
+        }
+        
+        function updateTotals() {
+            // Calculate totals
+            const numTrucks = dailyData.length;
+            const totalAreaValue = dailyData.reduce((sum, truck) => sum + truck.area, 0);
+            const totalWeightValue = dailyData.reduce((sum, truck) => sum + truck.weight, 0);
+            const avgYield = totalWeightValue / totalAreaValue || 0;
+            
+            // Update display
+            totalTrucks.textContent = numTrucks;
+            totalArea.textContent = totalAreaValue.toFixed(2);
+            totalWeight.textContent = totalWeightValue.toFixed(2);
+            averageYield.textContent = avgYield.toFixed(2);
+        }
+        
+        function exportToCSV() {
+            if (dailyData.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            // Create CSV header
+            let csvContent = 'Date,Truck Number,Start Value (ft),End Value (ft),Length (ft),Width (ft),Area (sq yd),Tonnage (tons),Weight (lbs),Yield (lbs/sq yd),Time\n';
+            
+            // Add rows
+            dailyData.forEach(truck => {
+                csvContent += `${truck.date},${truck.truckNumber},${truck.startValue.toFixed(2)},${truck.endValue.toFixed(2)},${truck.length.toFixed(2)},${truck.width.toFixed(2)},${truck.area.toFixed(2)},${truck.tonnage.toFixed(2)},${truck.weight.toFixed(2)},${truck.yield.toFixed(2)},${truck.timestamp}\n`;
+            });
+            
+            // Add totals row
+            const totalLengthValue = dailyData.reduce((sum, truck) => sum + truck.length, 0);
+            const totalAreaValue = dailyData.reduce((sum, truck) => sum + truck.area, 0);
+            const totalTonnageValue = dailyData.reduce((sum, truck) => sum + truck.tonnage, 0);
+            const totalWeightValue = dailyData.reduce((sum, truck) => sum + truck.weight, 0);
+            const avgYieldValue = totalWeightValue / totalAreaValue || 0;
+            
+            csvContent += `${currentDate.toLocaleDateString()},TOTALS,,,${totalLengthValue.toFixed(2)},,${totalAreaValue.toFixed(2)},${totalTonnageValue.toFixed(2)},${totalWeightValue.toFixed(2)},${avgYieldValue.toFixed(2)},\n`;
+            
+            // Create download link
+            const encodedUri = encodeURI('data:text/csv;charset=utf-8,' + csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', `asphalt_yield_${currentDate.toLocaleDateString().replace(/\//g, '-')}.csv`);
+            document.body.appendChild(link);
+            
+            // Trigger download
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function startNewDay() {
+            if (confirm('Are you sure you want to start a new day? This will archive today\'s data and reset the calculator.')) {
+                // Archive current data before reset
+                archiveData();
+                
+                // Reset daily data
+                dailyData = [];
+                
+                // Update date
+                currentDate = new Date();
+                updateDateDisplay();
+                
+                // Update UI
+                updateTruckTable();
+                updateTotals();
+                
+                // Save empty data for new day
+                saveData();
+            }
+        }
+        
+        function saveData() {
+            // Save daily data to local storage
+            localStorage.setItem('asphaltYieldData', JSON.stringify(dailyData));
+            localStorage.setItem('asphaltYieldDate', currentDate.toLocaleDateString());
+        }
+        
+        function loadData() {
+            // Load data from local storage
+            const savedDate = localStorage.getItem('asphaltYieldDate');
+            const savedData = localStorage.getItem('asphaltYieldData');
+            
+            // Check if we have saved data for today
+            if (savedDate === currentDate.toLocaleDateString() && savedData) {
+                dailyData = JSON.parse(savedData);
+                updateTruckTable();
+                updateTotals();
+            } else if (savedDate && savedDate !== currentDate.toLocaleDateString()) {
+                // If data exists but for a different day, archive it
+                archiveData();
+                dailyData = [];
+                saveData();
+            }
+        }
+        
+        function archiveData() {
+            // Get existing archives
+            let archives = JSON.parse(localStorage.getItem('asphaltYieldArchives') || '{}');
+            
+            // Get data to archive
+            const dataToArchive = localStorage.getItem('asphaltYieldData');
+            const dateToArchive = localStorage.getItem('asphaltYieldDate');
+            
+            // Save to archives if we have data
+            if (dataToArchive && dateToArchive) {
+                archives[dateToArchive] = JSON.parse(dataToArchive);
+                localStorage.setItem('asphaltYieldArchives', JSON.stringify(archives));
+            }
+        }
+    </script>
+</body>
+</html>
