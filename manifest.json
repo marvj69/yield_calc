@@ -1,0 +1,9 @@
+// manifest.json
+{
+  "name": "Asphalt Yield Calculator",
+  "short_name": "Asphalt Calc",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2b5797"
+}
