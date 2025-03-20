@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asphalt Yield Calculator</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Asphalt Calc">
+    <link rel="manifest" href="/manifest.json">
     <style>
         :root {
             --primary: #2b5797;
@@ -274,7 +278,7 @@
                             <input type="number" id="calculatedLength" readonly>
                         </div>
                     </div>
-                    <button id="calculateButton">Calculate Yield</button>
+                    <button id="calculateButton" class="hidden">Calculate Yield</button>
                 </div>
                 
                 <div class="results-section">
@@ -367,6 +371,8 @@
         // Data storage
         let dailyData = [];
         let currentDate = new Date();
+        let lastEndValue = null;
+        let lastWidth = null;
         
         // Constants
         const TONS_TO_POUNDS = 2000;
@@ -406,9 +412,13 @@
         // Load saved data
         loadData();
         
-        // Event listeners
-        startValueInput.addEventListener('input', updateLength);
-        endValueInput.addEventListener('input', updateLength);
+        // Event listeners for live calculation
+        startValueInput.addEventListener('input', updateLengthAndCalculate);
+        endValueInput.addEventListener('input', updateLengthAndCalculate);
+        widthInput.addEventListener('input', calculateYield);
+        truckTonnageInput.addEventListener('input', calculateYield);
+        
+        // Other event listeners
         calculateButton.addEventListener('click', calculateYield);
         saveTruckButton.addEventListener('click', saveTruckData);
         exportButton.addEventListener('click', exportToCSV);
@@ -435,6 +445,11 @@
             dateDisplay.textContent = `Date: ${currentDate.toLocaleDateString(undefined, options)}`;
         }
         
+        function updateLengthAndCalculate() {
+            updateLength();
+            calculateYield();
+        }
+        
         function updateLength() {
             const startValue = parseFloat(startValueInput.value) || 0;
             const endValue = parseFloat(endValueInput.value) || 0;
@@ -450,8 +465,13 @@
             const width = parseFloat(widthInput.value) || 0;
             const tonnage = parseFloat(truckTonnageInput.value) || 0;
             
+            // Only calculate if we have all necessary values
             if (length <= 0 || width <= 0 || tonnage <= 0) {
-                alert('Please enter valid values for all fields');
+                // Clear results
+                areaResult.textContent = '-';
+                weightResult.textContent = '-';
+                yieldResult.textContent = '-';
+                saveTruckButton.disabled = true;
                 return;
             }
             
@@ -470,8 +490,8 @@
             weightResult.textContent = weightInPounds.toFixed(2);
             yieldResult.textContent = yield.toFixed(2);
             
-            // Enable save button
-            saveTruckButton.disabled = false;
+            // Enable save button if truck number is filled
+            saveTruckButton.disabled = !truckNumberInput.value.trim();
         }
         
         function saveTruckData() {
@@ -508,6 +528,10 @@
                 date: currentDate.toLocaleDateString()
             };
             
+            // Save last values for auto-populating next truck
+            lastEndValue = endValue;
+            lastWidth = width;
+            
             // Add to daily data
             dailyData.push(truckData);
             
@@ -520,20 +544,33 @@
             // Save to local storage
             saveData();
             
-            // Reset form for next truck
-            saveTruckButton.disabled = true;
+            // Reset form for next truck but preserve width
+            resetFormForNextTruck();
+            
+            // Focus on truck number for next entry
+            truckNumberInput.focus();
+        }
+        
+        function resetFormForNextTruck() {
+            // Clear most fields
             truckNumberInput.value = '';
             truckTonnageInput.value = '';
-            startValueInput.value = '';
+            // Set start value to previous end value
+            if (lastEndValue !== null) {
+                startValueInput.value = lastEndValue.toFixed(2);
+            } else {
+                startValueInput.value = '';
+            }
             endValueInput.value = '';
-            widthInput.value = '';
+            // Keep previous width
+            if (lastWidth !== null && widthInput.value === '') {
+                widthInput.value = lastWidth.toFixed(2);
+            }
             calculatedLengthInput.value = '';
             areaResult.textContent = '-';
             weightResult.textContent = '-';
             yieldResult.textContent = '-';
-            
-            // Focus on truck number for next entry
-            truckNumberInput.focus();
+            saveTruckButton.disabled = true;
         }
         
         function updateTruckTable() {
@@ -544,17 +581,18 @@
             dailyData.forEach(truck => {
                 const row = document.createElement('tr');
                 
+                // Handle possible null values with fallbacks
                 row.innerHTML = `
-                    <td>${truck.truckNumber}</td>
-                    <td>${truck.startValue.toFixed(2)}</td>
-                    <td>${truck.endValue.toFixed(2)}</td>
-                    <td>${truck.length.toFixed(2)}</td>
-                    <td>${truck.width.toFixed(2)}</td>
-                    <td>${truck.area.toFixed(2)}</td>
-                    <td>${truck.tonnage.toFixed(2)}</td>
-                    <td>${truck.weight.toFixed(2)}</td>
-                    <td>${truck.yield.toFixed(2)}</td>
-                    <td>${truck.timestamp}</td>
+                    <td>${truck.truckNumber || ''}</td>
+                    <td>${typeof truck.startValue === 'number' ? truck.startValue.toFixed(2) : '0.00'}</td>
+                    <td>${typeof truck.endValue === 'number' ? truck.endValue.toFixed(2) : '0.00'}</td>
+                    <td>${typeof truck.length === 'number' ? truck.length.toFixed(2) : '0.00'}</td>
+                    <td>${typeof truck.width === 'number' ? truck.width.toFixed(2) : '0.00'}</td>
+                    <td>${typeof truck.area === 'number' ? truck.area.toFixed(2) : '0.00'}</td>
+                    <td>${typeof truck.tonnage === 'number' ? truck.tonnage.toFixed(2) : '0.00'}</td>
+                    <td>${typeof truck.weight === 'number' ? truck.weight.toFixed(2) : '0.00'}</td>
+                    <td>${typeof truck.yield === 'number' ? truck.yield.toFixed(2) : '0.00'}</td>
+                    <td>${truck.timestamp || ''}</td>
                 `;
                 
                 truckDataBody.appendChild(row);
@@ -565,12 +603,12 @@
         }
         
         function updateFooterTotals() {
-            // Calculate column totals and averages
-            const totalLengthValue = dailyData.reduce((sum, truck) => sum + truck.length, 0);
-            const totalAreaValue = dailyData.reduce((sum, truck) => sum + truck.area, 0);
-            const totalTonnageValue = dailyData.reduce((sum, truck) => sum + truck.tonnage, 0);
-            const totalWeightValue = dailyData.reduce((sum, truck) => sum + truck.weight, 0);
-            const avgYieldValue = totalWeightValue / totalAreaValue || 0;
+            // Calculate column totals and averages with null checks
+            const totalLengthValue = dailyData.reduce((sum, truck) => sum + (typeof truck.length === 'number' ? truck.length : 0), 0);
+            const totalAreaValue = dailyData.reduce((sum, truck) => sum + (typeof truck.area === 'number' ? truck.area : 0), 0);
+            const totalTonnageValue = dailyData.reduce((sum, truck) => sum + (typeof truck.tonnage === 'number' ? truck.tonnage : 0), 0);
+            const totalWeightValue = dailyData.reduce((sum, truck) => sum + (typeof truck.weight === 'number' ? truck.weight : 0), 0);
+            const avgYieldValue = totalAreaValue > 0 ? totalWeightValue / totalAreaValue : 0;
             
             // Update footer display
             totalLength.textContent = totalLengthValue.toFixed(2);
@@ -581,11 +619,11 @@
         }
         
         function updateTotals() {
-            // Calculate totals
+            // Calculate totals with null checks
             const numTrucks = dailyData.length;
-            const totalAreaValue = dailyData.reduce((sum, truck) => sum + truck.area, 0);
-            const totalWeightValue = dailyData.reduce((sum, truck) => sum + truck.weight, 0);
-            const avgYield = totalWeightValue / totalAreaValue || 0;
+            const totalAreaValue = dailyData.reduce((sum, truck) => sum + (typeof truck.area === 'number' ? truck.area : 0), 0);
+            const totalWeightValue = dailyData.reduce((sum, truck) => sum + (typeof truck.weight === 'number' ? truck.weight : 0), 0);
+            const avgYield = totalAreaValue > 0 ? totalWeightValue / totalAreaValue : 0;
             
             // Update display
             totalTrucks.textContent = numTrucks;
@@ -605,15 +643,24 @@
             
             // Add rows
             dailyData.forEach(truck => {
-                csvContent += `${truck.date},${truck.truckNumber},${truck.startValue.toFixed(2)},${truck.endValue.toFixed(2)},${truck.length.toFixed(2)},${truck.width.toFixed(2)},${truck.area.toFixed(2)},${truck.tonnage.toFixed(2)},${truck.weight.toFixed(2)},${truck.yield.toFixed(2)},${truck.timestamp}\n`;
+                csvContent += `${truck.date || ''},${truck.truckNumber || ''},`;
+                csvContent += `${typeof truck.startValue === 'number' ? truck.startValue.toFixed(2) : '0.00'},`;
+                csvContent += `${typeof truck.endValue === 'number' ? truck.endValue.toFixed(2) : '0.00'},`;
+                csvContent += `${typeof truck.length === 'number' ? truck.length.toFixed(2) : '0.00'},`;
+                csvContent += `${typeof truck.width === 'number' ? truck.width.toFixed(2) : '0.00'},`;
+                csvContent += `${typeof truck.area === 'number' ? truck.area.toFixed(2) : '0.00'},`;
+                csvContent += `${typeof truck.tonnage === 'number' ? truck.tonnage.toFixed(2) : '0.00'},`;
+                csvContent += `${typeof truck.weight === 'number' ? truck.weight.toFixed(2) : '0.00'},`;
+                csvContent += `${typeof truck.yield === 'number' ? truck.yield.toFixed(2) : '0.00'},`;
+                csvContent += `${truck.timestamp || ''}\n`;
             });
             
             // Add totals row
-            const totalLengthValue = dailyData.reduce((sum, truck) => sum + truck.length, 0);
-            const totalAreaValue = dailyData.reduce((sum, truck) => sum + truck.area, 0);
-            const totalTonnageValue = dailyData.reduce((sum, truck) => sum + truck.tonnage, 0);
-            const totalWeightValue = dailyData.reduce((sum, truck) => sum + truck.weight, 0);
-            const avgYieldValue = totalWeightValue / totalAreaValue || 0;
+            const totalLengthValue = dailyData.reduce((sum, truck) => sum + (typeof truck.length === 'number' ? truck.length : 0), 0);
+            const totalAreaValue = dailyData.reduce((sum, truck) => sum + (typeof truck.area === 'number' ? truck.area : 0), 0);
+            const totalTonnageValue = dailyData.reduce((sum, truck) => sum + (typeof truck.tonnage === 'number' ? truck.tonnage : 0), 0);
+            const totalWeightValue = dailyData.reduce((sum, truck) => sum + (typeof truck.weight === 'number' ? truck.weight : 0), 0);
+            const avgYieldValue = totalAreaValue > 0 ? totalWeightValue / totalAreaValue : 0;
             
             csvContent += `${currentDate.toLocaleDateString()},TOTALS,,,${totalLengthValue.toFixed(2)},,${totalAreaValue.toFixed(2)},${totalTonnageValue.toFixed(2)},${totalWeightValue.toFixed(2)},${avgYieldValue.toFixed(2)},\n`;
             
@@ -637,9 +684,24 @@
                 // Reset daily data
                 dailyData = [];
                 
+                // Reset last values
+                lastEndValue = null;
+                lastWidth = null;
+                
                 // Update date
                 currentDate = new Date();
                 updateDateDisplay();
+                
+                // Reset form
+                truckNumberInput.value = '';
+                truckTonnageInput.value = '';
+                startValueInput.value = '';
+                endValueInput.value = '';
+                widthInput.value = '';
+                calculatedLengthInput.value = '';
+                areaResult.textContent = '-';
+                weightResult.textContent = '-';
+                yieldResult.textContent = '-';
                 
                 // Update UI
                 updateTruckTable();
@@ -654,6 +716,14 @@
             // Save daily data to local storage
             localStorage.setItem('asphaltYieldData', JSON.stringify(dailyData));
             localStorage.setItem('asphaltYieldDate', currentDate.toLocaleDateString());
+            
+            // Save last values
+            if (lastEndValue !== null) {
+                localStorage.setItem('lastEndValue', lastEndValue.toString());
+            }
+            if (lastWidth !== null) {
+                localStorage.setItem('lastWidth', lastWidth.toString());
+            }
         }
         
         function loadData() {
@@ -661,11 +731,47 @@
             const savedDate = localStorage.getItem('asphaltYieldDate');
             const savedData = localStorage.getItem('asphaltYieldData');
             
+            // Load last values
+            const savedEndValue = localStorage.getItem('lastEndValue');
+            const savedWidth = localStorage.getItem('lastWidth');
+            
+            if (savedEndValue) {
+                lastEndValue = parseFloat(savedEndValue);
+                startValueInput.value = lastEndValue.toFixed(2);
+            }
+            
+            if (savedWidth) {
+                lastWidth = parseFloat(savedWidth);
+                widthInput.value = lastWidth.toFixed(2);
+            }
+            
             // Check if we have saved data for today
             if (savedDate === currentDate.toLocaleDateString() && savedData) {
-                dailyData = JSON.parse(savedData);
-                updateTruckTable();
-                updateTotals();
+                try {
+                    // Parse the saved data
+                    dailyData = JSON.parse(savedData);
+                    
+                    // Validate and fix any missing or null properties
+                    dailyData = dailyData.map(truck => ({
+                        truckNumber: truck.truckNumber || '',
+                        startValue: typeof truck.startValue === 'number' ? truck.startValue : 0,
+                        endValue: typeof truck.endValue === 'number' ? truck.endValue : 0,
+                        length: typeof truck.length === 'number' ? truck.length : 0,
+                        width: typeof truck.width === 'number' ? truck.width : 0,
+                        area: typeof truck.area === 'number' ? truck.area : 0,
+                        tonnage: typeof truck.tonnage === 'number' ? truck.tonnage : 0,
+                        weight: typeof truck.weight === 'number' ? truck.weight : 0,
+                        yield: typeof truck.yield === 'number' ? truck.yield : 0,
+                        timestamp: truck.timestamp || '',
+                        date: truck.date || currentDate.toLocaleDateString()
+                    }));
+                    
+                    updateTruckTable();
+                    updateTotals();
+                } catch (error) {
+                    console.error('Error loading saved data:', error);
+                    dailyData = [];
+                }
             } else if (savedDate && savedDate !== currentDate.toLocaleDateString()) {
                 // If data exists but for a different day, archive it
                 archiveData();
@@ -688,6 +794,23 @@
                 localStorage.setItem('asphaltYieldArchives', JSON.stringify(archives));
             }
         }
+        
+        // Check for truck number to enable save button on input
+        truckNumberInput.addEventListener('input', function() {
+            // Only enable if we have calculation results
+            if (areaResult.textContent !== '-') {
+                saveTruckButton.disabled = !this.value.trim();
+            }
+        });
+        if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+      })
+      .catch(error => {
+        console.error('Service Worker registration failed:', error);
+      });
+  }
     </script>
 </body>
 </html>
