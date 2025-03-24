@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   
   <!-- 1. Renamed the application. -->
   <title>HMA Paving Control</title>
@@ -49,11 +49,22 @@
       --hamburger-color: var(--accent);
     }
 
+    /* Prevent overscroll bounce effects */
+    html, body {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      -webkit-touch-callout: none; /* Disable callout to save image etc on iOS */
+      -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
     }
 
     body {
@@ -63,6 +74,7 @@
       padding: 10px;
       font-size: 14px; /* Reduced base font size */
       transition: background-color 0.3s ease, color 0.3s ease;
+      touch-action: pan-y; /* Allow only vertical scrolling */
     }
 
     .container {
@@ -75,6 +87,10 @@
       border-radius: 8px;
       position: relative;
       transition: background-color 0.3s ease;
+      height: calc(100vh - 20px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+      overscroll-behavior: contain; /* Prevent bounce while allowing scrolling */
     }
 
     header {
@@ -117,9 +133,13 @@
       color: #fff;
     }
 
+    /* Custom scrolling for tab content to work with fixed body */
     .tab-content {
       display: none;
       padding: 10px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .tab-content.active {
@@ -184,6 +204,9 @@
       overflow-x: auto;
       max-width: 100%;
       margin-top: 10px;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .truck-data-table {
@@ -1034,6 +1057,31 @@
     const TONS_TO_POUNDS = 2000;
     const SQ_FT_TO_SQ_YD = 9;
 
+    // Prevent scrolling and zooming on mobile
+    document.addEventListener('touchmove', function(event) {
+      if (event.scale !== 1) {
+        event.preventDefault();
+      }
+    }, { passive: false });
+    
+    // Prevent double-tap to zoom
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
+    
+    // Prevent default touchstart behavior for specific elements
+    document.addEventListener('touchstart', function(event) {
+      // Allow scrolling only inside elements with overflow
+      if (!event.target.closest('.container, .data-table-container, .archive-modal-content')) {
+        event.preventDefault();
+      }
+    }, { passive: false });
+
     // DOM Elements
     const currentDateDisplay = document.getElementById('currentDateDisplay');
     const truckNumberInput = document.getElementById('truckNumber');
@@ -1363,7 +1411,8 @@
       const encodedUri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
       const link = document.createElement('a');
       link.setAttribute('href', encodedUri);
-      link.setAttribute('download', `yield_data_${selectedDate}.csv`);
+      const today = getTodayDate();
+      link.setAttribute('download', `yield_data_all_records_${today}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1857,6 +1906,9 @@
       const tonsUsed = lbs / 2000;
       tonCalcResult.textContent = tonsUsed.toFixed(2);
     }
+
+    // Initialize the app
+    loadData();
   </script>
   
   <!-- Add JavaScript for Hamburger Menu -->
