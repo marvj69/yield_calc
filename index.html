@@ -1,816 +1,1367 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asphalt Yield Calculator</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Asphalt Calc">
-    <link rel="manifest" href="/manifest.json">
-    <style>
-        :root {
-            --primary: #2b5797;
-            --secondary: #4472c4;
-            --accent: #ed7d31;
-            --light: #f4f4f4;
-            --dark: #333;
-            --success: #5cb85c;
-            --danger: #d9534f;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: var(--light);
-            color: var(--dark);
-            line-height: 1.6;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        h1 {
-            color: var(--primary);
-        }
-        
-        .date-display {
-            font-size: 1.1rem;
-            color: var(--secondary);
-            margin: 10px 0;
-        }
-        
-        .input-section {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        input, button {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        
-        button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            margin-top: 10px;
-        }
-        
-        button:hover {
-            background-color: var(--secondary);
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .button-group button {
-            flex: 1;
-        }
-        
-        .export-btn {
-            background-color: var(--success);
-        }
-        
-        .export-btn:hover {
-            background-color: #4cae4c;
-        }
-        
-        .reset-btn {
-            background-color: var(--danger);
-        }
-        
-        .reset-btn:hover {
-            background-color: #c9302c;
-        }
-        
-        .results-section {
-            margin-top: 20px;
-        }
-        
-        .current-results, .total-results {
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-        
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        
-        .result-label {
-            font-weight: bold;
-        }
-        
-        .truck-data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            overflow-x: auto;
-        }
-        
-        .truck-data-table th, .truck-data-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .truck-data-table th {
-            background-color: var(--primary);
-            color: white;
-            position: sticky;
-            top: 0;
-        }
-        
-        .truck-data-table tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        
-        .truck-data-table tr:hover {
-            background-color: #e2e2e2;
-        }
-        
-        .truck-data-table tfoot {
-            font-weight: bold;
-            background-color: var(--secondary);
-            color: white;
-        }
-        
-        .truck-data-table tfoot td {
-            border-top: 2px solid var(--primary);
-        }
-        
-        @media (min-width: 768px) {
-            .input-grid {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .tab-container {
-            margin-bottom: 20px;
-        }
-        
-        .tab-buttons {
-            display: flex;
-            margin-bottom: 10px;
-        }
-        
-        .tab-button {
-            padding: 10px 20px;
-            background-color: #e2e2e2;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px 5px 0 0;
-            margin-right: 5px;
-            font-weight: bold;
-        }
-        
-        .tab-button.active {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .tab-content {
-            display: none;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 0 5px 5px 5px;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .data-table-container {
-            overflow-x: auto;
-            max-width: 100%;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  
+  <!-- 1. Renamed the application. -->
+  <title>HMA Paving Control</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="HMA Paving Control" />
+
+  <!-- Manifest for PWA -->
+  <link rel="manifest" href="/manifest.json" />
+
+  <style>
+    /* ===== Base Styling with Reduced Fonts/Fields (Request #9) ===== */
+    :root {
+      --primary: #2b5797;
+      --secondary: #4472c4;
+      --accent: #ed7d31;
+      --light: #f4f4f4;
+      --dark: #333;
+      --success: #5cb85c;
+      --danger: #d9534f;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.4;
+      padding: 10px;
+      font-size: 14px; /* Reduced base font size */
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px;
+      padding-top: 30px; /* Make space for the hamburger menu */
+      background: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      position: relative;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #ddd;
+      padding-top: 15px; /* Add space for hamburger menu */
+    }
+
+    h1 {
+      color: var(--primary);
+      font-size: 1.2rem; /* Reduced header font */
+      margin-bottom: 10px;
+    }
+
+    /* Tab Container Styling */
+    .tab-container {
+      margin-bottom: 10px;
+    }
+
+    .tab-buttons {
+      display: none; /* Hide the original tab buttons */
+    }
+
+    .tab-button {
+      flex: 1;
+      background-color: #e2e2e2;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .tab-button.active {
+      background-color: var(--primary);
+      color: #fff;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 10px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Add responsive layout styling for the side-by-side arrangement */
+    .flex-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .flex-container > * {
+      flex: 1;
+      min-width: 300px; /* Ensure minimum width for readability */
+    }
+
+    .input-section {
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      flex: 2; /* Give input section more space */
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .results-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .current-results, .total-results {
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 0; /* Remove bottom margin since we're using flex gap */
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .result-label {
+      font-weight: bold;
+    }
+
+    /* Data Table */
+    .data-table-container {
+      overflow-x: auto;
+      max-width: 100%;
+      margin-top: 10px;
+    }
+
+    .truck-data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .truck-data-table th,
+    .truck-data-table td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      font-size: 0.9rem;
+    }
+
+    .truck-data-table th {
+      background-color: var(--primary);
+      color: #fff;
+      position: sticky;
+      top: 0;
+    }
+
+    .truck-data-table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .truck-data-table tr:hover {
+      background-color: #e2e2e2;
+    }
+
+    .truck-data-table tfoot {
+      font-weight: bold;
+      background-color: var(--secondary);
+      color: #fff;
+    }
+
+    .truck-data-table tfoot td {
+      border-top: 2px solid var(--primary);
+    }
+
+    .delete-btn {
+      color: var(--danger);
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1.1rem;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .delete-btn:hover {
+      transform: scale(1.2);
+    }
+
+    /* Utility Classes */
+    .hidden {
+      display: none;
+    }
+
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (min-width: 600px) {
+      .input-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .input-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Mobile layout adjustments for two-column layout */
+    @media (max-width: 768px) {
+      .flex-container {
+        flex-direction: row; /* Keep as row for small screens */
+        flex-wrap: wrap;
+      }
+      
+      .flex-container > * {
+        min-width: calc(50% - 5px); /* Two columns with gap consideration */
+        width: calc(50% - 5px);
+      }
+      
+      .input-section, .results-container {
+        flex: 0 0 100%; /* Full width container */
+      }
+      
+      /* Create two columns for input fields */
+      .input-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+      }
+      
+      /* Make labels and inputs smaller */
+      .form-group label {
+        font-size: 0.8rem;
+        margin-bottom: 2px;
+      }
+      
+      .form-group input {
+        padding: 4px;
+        font-size: 0.8rem;
+      }
+      
+      /* Create two columns for results */
+      .results-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      
+      .current-results, .total-results {
+        flex: 0 0 calc(50% - 5px);
+        padding: 8px;
+      }
+      
+      /* Button group takes full width */
+      .button-group {
+        flex: 0 0 100%;
+      }
+      
+      /* Make result text smaller */
+      .result-row {
+        font-size: 0.8rem;
+      }
+      
+      /* Make headings smaller */
+      h2 {
+        font-size: 1rem;
+        margin: 0 0 5px 0;
+      }
+      
+      /* Reduce padding */
+      .container {
+        padding: 3px;
+        padding-top: 20px;
+      }
+      
+      .tab-content {
+        padding: 3px;
+      }
+      
+      .input-section {
+        padding: 6px;
+        margin-bottom: 5px;
+      }
+      
+      .current-results, .total-results {
+        padding: 6px;
+      }
+      
+      header {
+        margin-bottom: 5px;
+        padding-bottom: 2px;
+      }
+      
+      .current-date {
+        font-size: 0.8rem;
+        padding: 3px 0;
+      }
+    }
+
+    /* Form & Input Styling */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
+
+    input, button, select {
+      padding: 5px;
+      font-size: 0.9rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: #fff;
+      cursor: pointer;
+      border: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      margin-top: 5px;
+    }
+
+    button:hover {
+      background-color: var(--secondary);
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    /* Results Sections */
+    .results-section {
+      margin-top: 10px;
+    }
+
+    /* Add hamburger menu styles */
+    .hamburger-menu {
+      display: inline-block;
+      cursor: pointer;
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      z-index: 100;
+    }
+
+    .hamburger-icon {
+      width: 30px;
+      height: 23px;
+      position: relative;
+      transform: rotate(0deg);
+      transition: .5s ease-in-out;
+    }
+
+    .hamburger-icon span {
+      display: block;
+      position: absolute;
+      height: 3px;
+      width: 100%;
+      background: var(--primary);
+      border-radius: 3px;
+      opacity: 1;
+      left: 0;
+      transform: rotate(0deg);
+      transition: .25s ease-in-out;
+    }
+
+    .hamburger-icon span:nth-child(1) {
+      top: 0px;
+    }
+
+    .hamburger-icon span:nth-child(2) {
+      top: 10px;
+    }
+
+    .hamburger-icon span:nth-child(3) {
+      top: 20px;
+    }
+
+    .hamburger-icon.open span:nth-child(1) {
+      top: 10px;
+      transform: rotate(135deg);
+    }
+
+    .hamburger-icon.open span:nth-child(2) {
+      opacity: 0;
+      left: -60px;
+    }
+
+    .hamburger-icon.open span:nth-child(3) {
+      top: 10px;
+      transform: rotate(-135deg);
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background-color: white;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      transition: 0.3s;
+      z-index: 99;
+      padding-top: 60px;
+      overflow-y: auto;
+    }
+
+    .sidebar.open {
+      left: 0;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar-menu li {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      font-weight: bold;
+      color: var(--dark);
+      transition: 0.2s;
+    }
+
+    .sidebar-menu li:hover {
+      background-color: var(--light);
+      color: var(--primary);
+    }
+
+    .sidebar-menu li.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      z-index: 98;
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.3s;
+    }
+
+    .overlay.open {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* Current date display */
+    .current-date {
+      text-align: center;
+      font-weight: bold;
+      color: var(--primary);
+      padding: 5px 0;
+      position: relative;
+      width: 100%;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Asphalt Yield Calculator</h1>
-            <div class="date-display" id="currentDate">Date: </div>
-        </header>
-        
-        <div class="tab-container">
-            <div class="tab-buttons">
-                <button class="tab-button active" data-tab="calculator">Calculator</button>
-                <button class="tab-button" data-tab="data">Data History</button>
-            </div>
-            
-            <div class="tab-content active" id="calculator">
-                <div class="input-section">
-                    <h2>Truck Information</h2>
-                    <div class="input-grid">
-                        <div class="form-group">
-                            <label for="truckNumber">Truck Number:</label>
-                            <input type="text" id="truckNumber" placeholder="Enter truck identifier">
-                        </div>
-                        <div class="form-group">
-                            <label for="truckTonnage">Truck Tonnage (tons):</label>
-                            <input type="number" id="truckTonnage" step="0.01" placeholder="Enter tonnage in tons">
-                        </div>
-                        <div class="form-group">
-                            <label for="startValue">Start Value (feet):</label>
-                            <input type="number" id="startValue" step="0.01" placeholder="Enter start value">
-                        </div>
-                        <div class="form-group">
-                            <label for="endValue">End Value (feet):</label>
-                            <input type="number" id="endValue" step="0.01" placeholder="Enter end value">
-                        </div>
-                        <div class="form-group">
-                            <label for="width">Width (feet):</label>
-                            <input type="number" id="width" step="0.01" placeholder="Enter width in feet">
-                        </div>
-                        <div class="form-group">
-                            <label for="calculatedLength">Calculated Length (feet):</label>
-                            <input type="number" id="calculatedLength" readonly>
-                        </div>
-                    </div>
-                    <button id="calculateButton" class="hidden">Calculate Yield</button>
-                </div>
-                
-                <div class="results-section">
-                    <div class="current-results">
-                        <h2>Current Truck Results</h2>
-                        <div class="result-row">
-                            <span class="result-label">Area (square yards):</span>
-                            <span id="areaResult">-</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="result-label">Weight (pounds):</span>
-                            <span id="weightResult">-</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="result-label">Yield (pounds per square yard):</span>
-                            <span id="yieldResult">-</span>
-                        </div>
-                        <button id="saveTruckButton" disabled>Save Truck Data</button>
-                    </div>
-                    
-                    <div class="total-results">
-                        <h2>Day Summary</h2>
-                        <div class="result-row">
-                            <span class="result-label">Total Trucks:</span>
-                            <span id="totalTrucks">0</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="result-label">Total Area (square yards):</span>
-                            <span id="totalArea">0</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="result-label">Total Weight (pounds):</span>
-                            <span id="totalWeight">0</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="result-label">Average Yield (pounds per square yard):</span>
-                            <span id="averageYield">0</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="button-group">
-                    <button class="export-btn" id="exportButton">Export to CSV</button>
-                    <button class="reset-btn" id="resetButton">Start New Day</button>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="data">
-                <h2>Today's Trucks</h2>
-                <div class="data-table-container">
-                    <table class="truck-data-table" id="truckDataTable">
-                        <thead>
-                            <tr>
-                                <th>Truck #</th>
-                                <th>Start Value (ft)</th>
-                                <th>End Value (ft)</th>
-                                <th>Length (ft)</th>
-                                <th>Width (ft)</th>
-                                <th>Area (sq yd)</th>
-                                <th>Tonnage</th>
-                                <th>Weight (lbs)</th>
-                                <th>Yield (lbs/sq yd)</th>
-                                <th>Time</th>
-                            </tr>
-                        </thead>
-                        <tbody id="truckDataBody">
-                            <!-- Truck data will be populated here -->
-                        </tbody>
-                        <tfoot id="truckDataFooter">
-                            <tr>
-                                <td>Totals:</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td id="totalLength">0.00</td>
-                                <td>-</td>
-                                <td id="totalAreaFoot">0.00</td>
-                                <td id="totalTonnageFoot">0.00</td>
-                                <td id="totalWeightFoot">0.00</td>
-                                <td id="avgYieldFoot">0.00</td>
-                                <td>-</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </div>
+  <!-- Hamburger Menu and Sidebar -->
+  <div class="hamburger-menu">
+    <div class="hamburger-icon">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
+  </div>
+  
+  <div class="sidebar">
+    <ul class="sidebar-menu">
+      <li class="active" data-tab="yieldTab">Yield Calculator</li>
+      <li data-tab="dataTab">Data History</li>
+      <li data-tab="paverSpeedTab">Paver Speed</li>
+      <li data-tab="projLengthTab">Projected Length</li>
+      <li data-tab="tonnageTab">Tonnage Calc</li>
+    </ul>
+  </div>
+  
+  <div class="overlay"></div>
 
-    <script>
-        // Data storage
-        let dailyData = [];
-        let currentDate = new Date();
-        let lastEndValue = null;
-        let lastWidth = null;
-        
-        // Constants
-        const TONS_TO_POUNDS = 2000;
-        const SQ_FT_TO_SQ_YD = 9;
-        
-        // Elements
-        const dateDisplay = document.getElementById('currentDate');
-        const truckNumberInput = document.getElementById('truckNumber');
-        const truckTonnageInput = document.getElementById('truckTonnage');
-        const startValueInput = document.getElementById('startValue');
-        const endValueInput = document.getElementById('endValue');
-        const widthInput = document.getElementById('width');
-        const calculatedLengthInput = document.getElementById('calculatedLength');
-        const calculateButton = document.getElementById('calculateButton');
-        const saveTruckButton = document.getElementById('saveTruckButton');
-        const exportButton = document.getElementById('exportButton');
-        const resetButton = document.getElementById('resetButton');
-        const areaResult = document.getElementById('areaResult');
-        const weightResult = document.getElementById('weightResult');
-        const yieldResult = document.getElementById('yieldResult');
-        const totalTrucks = document.getElementById('totalTrucks');
-        const totalArea = document.getElementById('totalArea');
-        const totalWeight = document.getElementById('totalWeight');
-        const averageYield = document.getElementById('averageYield');
-        const truckDataBody = document.getElementById('truckDataBody');
-        const totalLength = document.getElementById('totalLength');
-        const totalAreaFoot = document.getElementById('totalAreaFoot');
-        const totalTonnageFoot = document.getElementById('totalTonnageFoot');
-        const totalWeightFoot = document.getElementById('totalWeightFoot');
-        const avgYieldFoot = document.getElementById('avgYieldFoot');
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
-        // Initialize date display
-        updateDateDisplay();
-        
-        // Load saved data
-        loadData();
-        
-        // Event listeners for live calculation
-        startValueInput.addEventListener('input', updateLengthAndCalculate);
-        endValueInput.addEventListener('input', updateLengthAndCalculate);
-        widthInput.addEventListener('input', calculateYield);
-        truckTonnageInput.addEventListener('input', calculateYield);
-        
-        // Other event listeners
-        calculateButton.addEventListener('click', calculateYield);
-        saveTruckButton.addEventListener('click', saveTruckData);
-        exportButton.addEventListener('click', exportToCSV);
-        resetButton.addEventListener('click', startNewDay);
-        
-        // Tab navigation
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.getAttribute('data-tab');
-                
-                // Update active button
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                
-                // Update active content
-                tabContents.forEach(content => content.classList.remove('active'));
-                document.getElementById(tabId).classList.add('active');
-            });
-        });
-        
-        // Functions
-        function updateDateDisplay() {
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            dateDisplay.textContent = `Date: ${currentDate.toLocaleDateString(undefined, options)}`;
-        }
-        
-        function updateLengthAndCalculate() {
-            updateLength();
-            calculateYield();
-        }
-        
-        function updateLength() {
-            const startValue = parseFloat(startValueInput.value) || 0;
-            const endValue = parseFloat(endValueInput.value) || 0;
+  <div class="container">
+    <header>
+      <!-- 1. Application Name Updated -->
+    </header>
+    
+    <!-- Current date display -->
+    <div class="current-date" id="currentDateDisplay"></div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-container">
+      <div class="tab-buttons">
+        <!-- Core Yield Calculator Tab -->
+        <button class="tab-button active" data-tab="yieldTab">Yield Calculator</button>
+
+        <!-- Data History Tab -->
+        <button class="tab-button" data-tab="dataTab">Data History</button>
+
+        <!-- 10. New Paver Speed Calculator -->
+        <button class="tab-button" data-tab="paverSpeedTab">Paver Speed</button>
+
+        <!-- 11. New Projected Paving Length Calculator -->
+        <button class="tab-button" data-tab="projLengthTab">Projected Length</button>
+
+        <!-- 12. New Tonnage (HMA Usage) Calculator -->
+        <button class="tab-button" data-tab="tonnageTab">Tonnage Calc</button>
+      </div>
+
+      <!-- ===== Yield Calculator Tab Content ===== -->
+      <div class="tab-content active" id="yieldTab">
+        <!-- Flex container for side-by-side layout -->
+        <div class="flex-container">
+          <!-- Left side: Input fields -->
+          <div class="input-section">
+            <h2>Truck Information</h2>
+            <div class="input-grid">
+              
+              <!-- Remove date input field -->
+              
+              <div class="form-group">
+                <label for="truckNumber">Load Number:</label>
+                <input type="text" id="truckNumber" placeholder="Enter load identifier" />
+              </div>
+
+              <div class="form-group">
+                <label for="truckTonnage">Truck Tonnage (tons):</label>
+                <input type="number" id="truckTonnage" step="0.01" min="0" placeholder="Enter tonnage" />
+              </div>
+
+              <div class="form-group">
+                <label for="startValue">Start Sta.:</label>
+                <input type="number" id="startValue" step="0.01" min="0" placeholder="Enter start station" />
+              </div>
+
+              <div class="form-group">
+                <label for="endValue">End Sta.:</label>
+                <input type="number" id="endValue" step="0.01" min="0" placeholder="Enter end station" />
+              </div>
+
+              <div class="form-group">
+                <label for="width">Width (feet):</label>
+                <input type="number" id="width" step="0.01" min="0" placeholder="Enter width" />
+              </div>
+
+              <div class="form-group">
+                <label for="calculatedLength">Calculated Length (feet):</label>
+                <input type="number" id="calculatedLength" readonly />
+              </div>
+              
+              <!-- 7. "Save Truck Data" without forcing calculation click first -->
+              <button id="saveTruckButton" disabled>Save Truck Data</button>
+            </div>
+          </div>
+
+          <!-- Right side: Results -->
+          <div class="results-container">
+            <div class="current-results">
+              <h2>Current Truck Results</h2>
+              <div class="result-row">
+                <span class="result-label">Area (sq yd):</span>
+                <span id="areaResult">-</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">Weight (lbs):</span>
+                <span id="weightResult">-</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">Yield (lbs/sq yd):</span>
+                <span id="yieldResult">-</span>
+              </div>
+            </div>
+
+            <div class="total-results">
+              <h2>Day Summary</h2>
+              <div class="result-row">
+                <span class="result-label">Total Trucks:</span>
+                <span id="totalTrucks">0</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">Total Area (sq yd):</span>
+                <span id="totalArea">0</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">Total Weight (lbs):</span>
+                <span id="totalWeight">0</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">Average Yield (lbs/sq yd):</span>
+                <span id="averageYield">0</span>
+              </div>
+            </div>
             
-            if (startValue && endValue) {
-                calculatedLengthInput.value = Math.abs(endValue - startValue).toFixed(2);
-            }
-        }
-        
-        function calculateYield() {
-            // Get values
-            const length = parseFloat(calculatedLengthInput.value) || 0;
-            const width = parseFloat(widthInput.value) || 0;
-            const tonnage = parseFloat(truckTonnageInput.value) || 0;
-            
-            // Only calculate if we have all necessary values
-            if (length <= 0 || width <= 0 || tonnage <= 0) {
-                // Clear results
-                areaResult.textContent = '-';
-                weightResult.textContent = '-';
-                yieldResult.textContent = '-';
-                saveTruckButton.disabled = true;
-                return;
-            }
-            
-            // Calculate area in square yards
-            const areaInSqFt = length * width;
-            const areaInSqYd = areaInSqFt / SQ_FT_TO_SQ_YD;
-            
-            // Convert tonnage to pounds
-            const weightInPounds = tonnage * TONS_TO_POUNDS;
-            
-            // Calculate yield
-            const yield = weightInPounds / areaInSqYd;
-            
-            // Display results
-            areaResult.textContent = areaInSqYd.toFixed(2);
-            weightResult.textContent = weightInPounds.toFixed(2);
-            yieldResult.textContent = yield.toFixed(2);
-            
-            // Enable save button if truck number is filled
-            saveTruckButton.disabled = !truckNumberInput.value.trim();
-        }
-        
-        function saveTruckData() {
-            // Validate truck number
-            if (!truckNumberInput.value.trim()) {
-                alert('Please enter a truck identifier');
-                return;
-            }
-            
-            // Get calculated values
-            const truckNumber = truckNumberInput.value.trim();
-            const startValue = parseFloat(startValueInput.value);
-            const endValue = parseFloat(endValueInput.value);
-            const length = parseFloat(calculatedLengthInput.value);
-            const width = parseFloat(widthInput.value);
-            const area = parseFloat(areaResult.textContent);
-            const tonnage = parseFloat(truckTonnageInput.value);
-            const weight = parseFloat(weightResult.textContent);
-            const yield = parseFloat(yieldResult.textContent);
-            const timestamp = new Date().toLocaleTimeString();
-            
-            // Create data object
-            const truckData = {
-                truckNumber,
-                startValue,
-                endValue,
-                length,
-                width,
-                area,
-                tonnage,
-                weight,
-                yield,
-                timestamp,
-                date: currentDate.toLocaleDateString()
-            };
-            
-            // Save last values for auto-populating next truck
-            lastEndValue = endValue;
-            lastWidth = width;
-            
-            // Add to daily data
-            dailyData.push(truckData);
-            
-            // Update table
-            updateTruckTable();
-            
-            // Update totals
-            updateTotals();
-            
-            // Save to local storage
-            saveData();
-            
-            // Reset form for next truck but preserve width
-            resetFormForNextTruck();
-            
-            // Focus on truck number for next entry
-            truckNumberInput.focus();
-        }
-        
-        function resetFormForNextTruck() {
-            // Clear most fields
-            truckNumberInput.value = '';
-            truckTonnageInput.value = '';
-            // Set start value to previous end value
-            if (lastEndValue !== null) {
-                startValueInput.value = lastEndValue.toFixed(2);
-            } else {
-                startValueInput.value = '';
-            }
-            endValueInput.value = '';
-            // Keep previous width
-            if (lastWidth !== null && widthInput.value === '') {
-                widthInput.value = lastWidth.toFixed(2);
-            }
-            calculatedLengthInput.value = '';
-            areaResult.textContent = '-';
-            weightResult.textContent = '-';
-            yieldResult.textContent = '-';
-            saveTruckButton.disabled = true;
-        }
-        
-        function updateTruckTable() {
-            // Clear table
-            truckDataBody.innerHTML = '';
-            
-            // Add rows for each truck
-            dailyData.forEach(truck => {
-                const row = document.createElement('tr');
-                
-                // Handle possible null values with fallbacks
-                row.innerHTML = `
-                    <td>${truck.truckNumber || ''}</td>
-                    <td>${typeof truck.startValue === 'number' ? truck.startValue.toFixed(2) : '0.00'}</td>
-                    <td>${typeof truck.endValue === 'number' ? truck.endValue.toFixed(2) : '0.00'}</td>
-                    <td>${typeof truck.length === 'number' ? truck.length.toFixed(2) : '0.00'}</td>
-                    <td>${typeof truck.width === 'number' ? truck.width.toFixed(2) : '0.00'}</td>
-                    <td>${typeof truck.area === 'number' ? truck.area.toFixed(2) : '0.00'}</td>
-                    <td>${typeof truck.tonnage === 'number' ? truck.tonnage.toFixed(2) : '0.00'}</td>
-                    <td>${typeof truck.weight === 'number' ? truck.weight.toFixed(2) : '0.00'}</td>
-                    <td>${typeof truck.yield === 'number' ? truck.yield.toFixed(2) : '0.00'}</td>
-                    <td>${truck.timestamp || ''}</td>
-                `;
-                
-                truckDataBody.appendChild(row);
-            });
-            
-            // Update footer totals
-            updateFooterTotals();
-        }
-        
-        function updateFooterTotals() {
-            // Calculate column totals and averages with null checks
-            const totalLengthValue = dailyData.reduce((sum, truck) => sum + (typeof truck.length === 'number' ? truck.length : 0), 0);
-            const totalAreaValue = dailyData.reduce((sum, truck) => sum + (typeof truck.area === 'number' ? truck.area : 0), 0);
-            const totalTonnageValue = dailyData.reduce((sum, truck) => sum + (typeof truck.tonnage === 'number' ? truck.tonnage : 0), 0);
-            const totalWeightValue = dailyData.reduce((sum, truck) => sum + (typeof truck.weight === 'number' ? truck.weight : 0), 0);
-            const avgYieldValue = totalAreaValue > 0 ? totalWeightValue / totalAreaValue : 0;
-            
-            // Update footer display
-            totalLength.textContent = totalLengthValue.toFixed(2);
-            totalAreaFoot.textContent = totalAreaValue.toFixed(2);
-            totalTonnageFoot.textContent = totalTonnageValue.toFixed(2);
-            totalWeightFoot.textContent = totalWeightValue.toFixed(2);
-            avgYieldFoot.textContent = avgYieldValue.toFixed(2);
-        }
-        
-        function updateTotals() {
-            // Calculate totals with null checks
-            const numTrucks = dailyData.length;
-            const totalAreaValue = dailyData.reduce((sum, truck) => sum + (typeof truck.area === 'number' ? truck.area : 0), 0);
-            const totalWeightValue = dailyData.reduce((sum, truck) => sum + (typeof truck.weight === 'number' ? truck.weight : 0), 0);
-            const avgYield = totalAreaValue > 0 ? totalWeightValue / totalAreaValue : 0;
-            
-            // Update display
-            totalTrucks.textContent = numTrucks;
-            totalArea.textContent = totalAreaValue.toFixed(2);
-            totalWeight.textContent = totalWeightValue.toFixed(2);
-            averageYield.textContent = avgYield.toFixed(2);
-        }
-        
-        function exportToCSV() {
-            if (dailyData.length === 0) {
-                alert('No data to export');
-                return;
-            }
-            
-            // Create CSV header
-            let csvContent = 'Date,Truck Number,Start Value (ft),End Value (ft),Length (ft),Width (ft),Area (sq yd),Tonnage (tons),Weight (lbs),Yield (lbs/sq yd),Time\n';
-            
-            // Add rows
-            dailyData.forEach(truck => {
-                csvContent += `${truck.date || ''},${truck.truckNumber || ''},`;
-                csvContent += `${typeof truck.startValue === 'number' ? truck.startValue.toFixed(2) : '0.00'},`;
-                csvContent += `${typeof truck.endValue === 'number' ? truck.endValue.toFixed(2) : '0.00'},`;
-                csvContent += `${typeof truck.length === 'number' ? truck.length.toFixed(2) : '0.00'},`;
-                csvContent += `${typeof truck.width === 'number' ? truck.width.toFixed(2) : '0.00'},`;
-                csvContent += `${typeof truck.area === 'number' ? truck.area.toFixed(2) : '0.00'},`;
-                csvContent += `${typeof truck.tonnage === 'number' ? truck.tonnage.toFixed(2) : '0.00'},`;
-                csvContent += `${typeof truck.weight === 'number' ? truck.weight.toFixed(2) : '0.00'},`;
-                csvContent += `${typeof truck.yield === 'number' ? truck.yield.toFixed(2) : '0.00'},`;
-                csvContent += `${truck.timestamp || ''}\n`;
-            });
-            
-            // Add totals row
-            const totalLengthValue = dailyData.reduce((sum, truck) => sum + (typeof truck.length === 'number' ? truck.length : 0), 0);
-            const totalAreaValue = dailyData.reduce((sum, truck) => sum + (typeof truck.area === 'number' ? truck.area : 0), 0);
-            const totalTonnageValue = dailyData.reduce((sum, truck) => sum + (typeof truck.tonnage === 'number' ? truck.tonnage : 0), 0);
-            const totalWeightValue = dailyData.reduce((sum, truck) => sum + (typeof truck.weight === 'number' ? truck.weight : 0), 0);
-            const avgYieldValue = totalAreaValue > 0 ? totalWeightValue / totalAreaValue : 0;
-            
-            csvContent += `${currentDate.toLocaleDateString()},TOTALS,,,${totalLengthValue.toFixed(2)},,${totalAreaValue.toFixed(2)},${totalTonnageValue.toFixed(2)},${totalWeightValue.toFixed(2)},${avgYieldValue.toFixed(2)},\n`;
-            
-            // Create download link
-            const encodedUri = encodeURI('data:text/csv;charset=utf-8,' + csvContent);
-            const link = document.createElement('a');
-            link.setAttribute('href', encodedUri);
-            link.setAttribute('download', `asphalt_yield_${currentDate.toLocaleDateString().replace(/\//g, '-')}.csv`);
-            document.body.appendChild(link);
-            
-            // Trigger download
-            link.click();
-            document.body.removeChild(link);
-        }
-        
-        function startNewDay() {
-            if (confirm('Are you sure you want to start a new day? This will archive today\'s data and reset the calculator.')) {
-                // Archive current data before reset
-                archiveData();
-                
-                // Reset daily data
-                dailyData = [];
-                
-                // Reset last values
-                lastEndValue = null;
-                lastWidth = null;
-                
-                // Update date
-                currentDate = new Date();
-                updateDateDisplay();
-                
-                // Reset form
-                truckNumberInput.value = '';
-                truckTonnageInput.value = '';
-                startValueInput.value = '';
-                endValueInput.value = '';
-                widthInput.value = '';
-                calculatedLengthInput.value = '';
-                areaResult.textContent = '-';
-                weightResult.textContent = '-';
-                yieldResult.textContent = '-';
-                
-                // Update UI
-                updateTruckTable();
-                updateTotals();
-                
-                // Save empty data for new day
-                saveData();
-            }
-        }
-        
-        function saveData() {
-            // Save daily data to local storage
-            localStorage.setItem('asphaltYieldData', JSON.stringify(dailyData));
-            localStorage.setItem('asphaltYieldDate', currentDate.toLocaleDateString());
-            
-            // Save last values
-            if (lastEndValue !== null) {
-                localStorage.setItem('lastEndValue', lastEndValue.toString());
-            }
-            if (lastWidth !== null) {
-                localStorage.setItem('lastWidth', lastWidth.toString());
-            }
-        }
-        
-        function loadData() {
-            // Load data from local storage
-            const savedDate = localStorage.getItem('asphaltYieldDate');
-            const savedData = localStorage.getItem('asphaltYieldData');
-            
-            // Load last values
-            const savedEndValue = localStorage.getItem('lastEndValue');
-            const savedWidth = localStorage.getItem('lastWidth');
-            
-            if (savedEndValue) {
-                lastEndValue = parseFloat(savedEndValue);
-                startValueInput.value = lastEndValue.toFixed(2);
-            }
-            
-            if (savedWidth) {
-                lastWidth = parseFloat(savedWidth);
-                widthInput.value = lastWidth.toFixed(2);
-            }
-            
-            // Check if we have saved data for today
-            if (savedDate === currentDate.toLocaleDateString() && savedData) {
-                try {
-                    // Parse the saved data
-                    dailyData = JSON.parse(savedData);
-                    
-                    // Validate and fix any missing or null properties
-                    dailyData = dailyData.map(truck => ({
-                        truckNumber: truck.truckNumber || '',
-                        startValue: typeof truck.startValue === 'number' ? truck.startValue : 0,
-                        endValue: typeof truck.endValue === 'number' ? truck.endValue : 0,
-                        length: typeof truck.length === 'number' ? truck.length : 0,
-                        width: typeof truck.width === 'number' ? truck.width : 0,
-                        area: typeof truck.area === 'number' ? truck.area : 0,
-                        tonnage: typeof truck.tonnage === 'number' ? truck.tonnage : 0,
-                        weight: typeof truck.weight === 'number' ? truck.weight : 0,
-                        yield: typeof truck.yield === 'number' ? truck.yield : 0,
-                        timestamp: truck.timestamp || '',
-                        date: truck.date || currentDate.toLocaleDateString()
-                    }));
-                    
-                    updateTruckTable();
-                    updateTotals();
-                } catch (error) {
-                    console.error('Error loading saved data:', error);
-                    dailyData = [];
-                }
-            } else if (savedDate && savedDate !== currentDate.toLocaleDateString()) {
-                // If data exists but for a different day, archive it
-                archiveData();
-                dailyData = [];
-                saveData();
-            }
-        }
-        
-        function archiveData() {
-            // Get existing archives
-            let archives = JSON.parse(localStorage.getItem('asphaltYieldArchives') || '{}');
-            
-            // Get data to archive
-            const dataToArchive = localStorage.getItem('asphaltYieldData');
-            const dateToArchive = localStorage.getItem('asphaltYieldDate');
-            
-            // Save to archives if we have data
-            if (dataToArchive && dateToArchive) {
-                archives[dateToArchive] = JSON.parse(dataToArchive);
-                localStorage.setItem('asphaltYieldArchives', JSON.stringify(archives));
-            }
-        }
-        
-        // Check for truck number to enable save button on input
-        truckNumberInput.addEventListener('input', function() {
-            // Only enable if we have calculation results
-            if (areaResult.textContent !== '-') {
-                saveTruckButton.disabled = !this.value.trim();
-            }
-        });
-        if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('Service Worker registered with scope:', registration.scope);
-      })
-      .catch(error => {
-        console.error('Service Worker registration failed:', error);
+            <div class="button-group">
+              <button class="export-btn" id="exportButton" style="background-color: var(--success);">
+                Export to CSV
+              </button>
+              <button class="reset-btn" id="resetButton" style="background-color: var(--danger);">
+                Start New Day
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End of Yield Calculator Tab -->
+
+      <!-- ===== Data History Tab Content ===== -->
+      <div class="tab-content" id="dataTab">
+        <h2>Today's Loads</h2>
+        <div class="data-table-container">
+          <table class="truck-data-table" id="truckDataTable">
+            <thead>
+              <tr>
+                <th>Load #</th>
+                <th>Start Sta.</th>
+                <th>End Sta.</th>
+                <th>Length (ft)</th>
+                <th>Width (ft)</th>
+                <th>Area (sq yd)</th>
+                <th>Tonnage</th>
+                <th>Weight (lbs)</th>
+                <th>Yield (lbs/sq yd)</th>
+                <!-- 2. Removed Time Feature => remove "Time" column -->
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="truckDataBody">
+              <!-- Data appended via JavaScript -->
+            </tbody>
+            <tfoot id="truckDataFooter">
+              <tr>
+                <td>Totals:</td>
+                <td>-</td>
+                <td>-</td>
+                <td id="totalLength">0.00</td>
+                <td>-</td>
+                <td id="totalAreaFoot">0.00</td>
+                <td id="totalTonnageFoot">0.00</td>
+                <td id="totalWeightFoot">0.00</td>
+                <td id="avgYieldFoot">0.00</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <!-- End of Data History Tab -->
+
+      <!-- 10. Paver Speed Calculator Tab -->
+      <div class="tab-content" id="paverSpeedTab">
+        <h2>Paver Speed Calculator</h2>
+        <!-- V = (R_p * L) / 60, where L = (2000/9) * W * A -->
+        <!-- Required Inputs: R_p, W, A -->
+        <div class="flex-container">
+          <div class="input-section">
+            <div class="input-grid">
+              <div class="form-group">
+                <label for="paverProdRate">Plant Production Rate (R<sub>p</sub>, tons/hour):</label>
+                <input type="number" id="paverProdRate" step="0.01" min="0" />
+              </div>
+              <div class="form-group">
+                <label for="paverWidth">Pavement Width (W, feet):</label>
+                <input type="number" id="paverWidth" step="0.01" min="0" />
+              </div>
+              <div class="form-group">
+                <label for="paverYield">Application Rate (A, lbs/sq yd):</label>
+                <input type="number" id="paverYield" step="0.01" min="0" />
+              </div>
+            </div>
+          </div>
+          <div class="results-container">
+            <div class="current-results">
+              <h3>Result</h3>
+              <div class="result-row">
+                <span class="result-label">Paver Speed (feet/minute):</span>
+                <span id="paverSpeedResult">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11. Projected Paving Length Calculator Tab -->
+      <div class="tab-content" id="projLengthTab">
+        <h2>Projected Paving Length</h2>
+        <!-- Projected Paving Length = ( Tons / ( (((LaneWidth*100)/9)*Yield) / 2000 ) ) * 100 -->
+        <!-- Required Inputs: Tons, LaneWidth, Yield -->
+        <div class="flex-container">
+          <div class="input-section">
+            <div class="input-grid">
+              <div class="form-group">
+                <label for="projTons">Projected Daily Tons:</label>
+                <input type="number" id="projTons" step="0.01" min="0" />
+              </div>
+              <div class="form-group">
+                <label for="projLaneWidth">Lane Width (LaneWidth, feet):</label>
+                <input type="number" id="projLaneWidth" step="0.01" min="0" />
+              </div>
+              <div class="form-group">
+                <label for="projYield">Current Actual Application Rate (Yield, lbs/sq yd):</label>
+                <input type="number" id="projYield" step="0.01" min="0" />
+              </div>
+            </div>
+          </div>
+          <div class="results-container">
+            <div class="current-results">
+              <h3>Result</h3>
+              <div class="result-row">
+                <span class="result-label">Projected Length (feet):</span>
+                <span id="projLengthResult">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 12. Tonnage (HMA Usage) Calculator Tab -->
+      <div class="tab-content" id="tonnageTab">
+        <h2>HMA Usage (Tonnage) Calculator</h2>
+        <!-- Tons Used = ((Length * Width / 9) * 110 * Depth) / 2000 -->
+        <div class="flex-container">
+          <div class="input-section">
+            <div class="input-grid">
+              <div class="form-group">
+                <label for="tonLength">Length (feet):</label>
+                <input type="number" id="tonLength" step="0.01" min="0" />
+              </div>
+              <div class="form-group">
+                <label for="tonWidth">Width (feet):</label>
+                <input type="number" id="tonWidth" step="0.01" min="0" />
+              </div>
+              <div class="form-group">
+                <label for="tonDepth">Depth (inches):</label>
+                <input type="number" id="tonDepth" step="0.01" min="0" />
+              </div>
+            </div>
+          </div>
+          <div class="results-container">
+            <div class="current-results">
+              <h3>Result</h3>
+              <div class="result-row">
+                <span class="result-label">Estimated Tons Used:</span>
+                <span id="tonCalcResult">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End of Additional Tabs -->
+    </div>
+    <!-- End of Tab Container -->
+  </div>
+
+  <script>
+    /***********************************************************
+     * Data and State
+     ***********************************************************/
+    // Where we store the yield-calculator truck data (core feature).
+    let dailyData = [];
+    let lastEndValue = null;
+    let lastWidth = null;
+    let currentDate = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
+
+    // Constants
+    const TONS_TO_POUNDS = 2000;
+    const SQ_FT_TO_SQ_YD = 9;
+
+    // DOM Elements
+    const currentDateDisplay = document.getElementById('currentDateDisplay');
+    const truckNumberInput = document.getElementById('truckNumber');
+    const truckTonnageInput = document.getElementById('truckTonnage');
+    const startValueInput = document.getElementById('startValue');
+    const endValueInput = document.getElementById('endValue');
+    const widthInput = document.getElementById('width');
+    const calculatedLengthInput = document.getElementById('calculatedLength');
+    const saveTruckButton = document.getElementById('saveTruckButton');
+    const exportButton = document.getElementById('exportButton');
+    const resetButton = document.getElementById('resetButton');
+    const areaResult = document.getElementById('areaResult');
+    const weightResult = document.getElementById('weightResult');
+    const yieldResult = document.getElementById('yieldResult');
+    const totalTrucks = document.getElementById('totalTrucks');
+    const totalArea = document.getElementById('totalArea');
+    const totalWeight = document.getElementById('totalWeight');
+    const averageYield = document.getElementById('averageYield');
+    const truckDataBody = document.getElementById('truckDataBody');
+    const totalLength = document.getElementById('totalLength');
+    const totalAreaFoot = document.getElementById('totalAreaFoot');
+    const totalTonnageFoot = document.getElementById('totalTonnageFoot');
+    const totalWeightFoot = document.getElementById('totalWeightFoot');
+    const avgYieldFoot = document.getElementById('avgYieldFoot');
+
+    // Additional Calculators' DOM references
+    const paverProdRate = document.getElementById('paverProdRate');
+    const paverWidth = document.getElementById('paverWidth');
+    const paverYield = document.getElementById('paverYield');
+    const paverSpeedResult = document.getElementById('paverSpeedResult');
+
+    const projTons = document.getElementById('projTons');
+    const projLaneWidth = document.getElementById('projLaneWidth');
+    const projYield = document.getElementById('projYield');
+    const projLengthResult = document.getElementById('projLengthResult');
+
+    const tonLength = document.getElementById('tonLength');
+    const tonWidth = document.getElementById('tonWidth');
+    const tonDepth = document.getElementById('tonDepth');
+    const tonCalcResult = document.getElementById('tonCalcResult');
+
+    /***********************************************************
+     * Initialization
+     ***********************************************************/
+    // Format and display current date
+    function formatDateForDisplay(dateString) {
+      const date = new Date(dateString);
+      const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+      return date.toLocaleDateString('en-US', options);
+    }
+    
+    // Always update to today's date on initial load
+    currentDate = new Date().toISOString().split('T')[0];
+    currentDateDisplay.textContent = formatDateForDisplay(currentDate);
+
+    loadData();
+    updateTruckTable();
+    updateTotals();
+
+    // Event Listeners (Real-Time Calculations)
+    [startValueInput, endValueInput, widthInput, truckTonnageInput].forEach(el => {
+      el.addEventListener('input', () => {
+        updateLength();
+        calculateYield();
       });
-  }
-    </script>
+    });
+
+    truckNumberInput.addEventListener('input', () => {
+      // Enable "Save Truck Data" if there's a load number AND valid yield
+      const hasLoadNumber = truckNumberInput.value.trim() !== '';
+      const hasYield = yieldResult.textContent !== '-';
+      saveTruckButton.disabled = !(hasLoadNumber && hasYield);
+    });
+
+    // Save Truck Button
+    saveTruckButton.addEventListener('click', saveTruckData);
+
+    // Export to CSV
+    exportButton.addEventListener('click', exportToCSV);
+
+    // Reset Day
+    resetButton.addEventListener('click', startNewDay);
+
+    // Tab Navigation
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const tabId = button.getAttribute('data-tab');
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        tabContents.forEach(tc => tc.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+
+    // Additional Calculators - Real-time event handlers
+    [paverProdRate, paverWidth, paverYield].forEach(el => el.addEventListener('input', calculatePaverSpeed));
+    [projTons, projLaneWidth, projYield].forEach(el => el.addEventListener('input', calculateProjectedLength));
+    [tonLength, tonWidth, tonDepth].forEach(el => el.addEventListener('input', calculateTonnageUsed));
+
+    /***********************************************************
+     * Core Yield Calculator Functions
+     ***********************************************************/
+    function updateLength() {
+      const startValue = parseFloat(startValueInput.value) || 0;
+      const endValue = parseFloat(endValueInput.value) || 0;
+      if (startValue && endValue) {
+        calculatedLengthInput.value = Math.abs(endValue - startValue).toFixed(2);
+      } else {
+        calculatedLengthInput.value = '';
+      }
+    }
+
+    function calculateYield() {
+      const length = parseFloat(calculatedLengthInput.value) || 0;
+      const width = parseFloat(widthInput.value) || 0;
+      const tonnage = parseFloat(truckTonnageInput.value) || 0;
+
+      if (length <= 0 || width <= 0 || tonnage <= 0) {
+        areaResult.textContent = '-';
+        weightResult.textContent = '-';
+        yieldResult.textContent = '-';
+        saveTruckButton.disabled = true;
+        return;
+      }
+
+      // Area in sq yards
+      const areaInSqFt = length * width;
+      const areaInSqYd = areaInSqFt / SQ_FT_TO_SQ_YD;
+
+      // Convert tonnage to pounds
+      const weightInPounds = tonnage * TONS_TO_POUNDS;
+
+      // Calculate yield
+      const yieldVal = weightInPounds / areaInSqYd;
+
+      // Update UI
+      areaResult.textContent = areaInSqYd.toFixed(2);
+      weightResult.textContent = weightInPounds.toFixed(2);
+      yieldResult.textContent = yieldVal.toFixed(2);
+
+      // Enable save button if load number present
+      const hasLoadNumber = truckNumberInput.value.trim() !== '';
+      saveTruckButton.disabled = !hasLoadNumber;
+    }
+
+    function saveTruckData() {
+      if (!truckNumberInput.value.trim()) {
+        alert('Please enter a Load Number');
+        return;
+      }
+
+      saveTruckButton.disabled = true;
+      saveTruckButton.innerHTML = 'Saving... <div class="loader"></div>';
+
+      const loadNumber = truckNumberInput.value.trim();
+      const startVal = parseFloat(startValueInput.value) || 0;
+      const endVal = parseFloat(endValueInput.value) || 0;
+      const lengthVal = parseFloat(calculatedLengthInput.value) || 0;
+      const widthVal = parseFloat(widthInput.value) || 0;
+      const areaVal = parseFloat(areaResult.textContent) || 0;
+      const tonnageVal = parseFloat(truckTonnageInput.value) || 0;
+      const weightVal = parseFloat(weightResult.textContent) || 0;
+      const yieldVal = parseFloat(yieldResult.textContent) || 0;
+
+      // Build record
+      const truckData = {
+        id: Date.now().toString(),
+        loadNumber,
+        startValue: startVal,
+        endValue: endVal,
+        length: lengthVal,
+        width: widthVal,
+        area: areaVal,
+        tonnage: tonnageVal,
+        weight: weightVal,
+        yield: yieldVal,
+        date: currentDate // use current date
+      };
+
+      // 5. Auto-transfer of last End Sta. => next Start Sta.
+      lastEndValue = endVal;
+      lastWidth = widthVal;
+
+      dailyData.push(truckData);
+      saveData();         // Persist to localStorage
+      updateTruckTable(); // Refresh the table
+      updateTotals();     // Update summary info
+
+      // Reset for next truck, except auto-populated fields
+      resetFormForNextTruck();
+
+      saveTruckButton.innerHTML = 'Save Truck Data';
+      truckNumberInput.focus();
+    }
+
+    function resetFormForNextTruck() {
+      truckNumberInput.value = '';
+      truckTonnageInput.value = '';
+      if (lastEndValue !== null) {
+        startValueInput.value = lastEndValue.toFixed(2);
+      } else {
+        startValueInput.value = '';
+      }
+      endValueInput.value = '';
+      if (lastWidth !== null && widthInput.value === '') {
+        widthInput.value = lastWidth.toFixed(2);
+      }
+      calculatedLengthInput.value = '';
+      areaResult.textContent = '-';
+      weightResult.textContent = '-';
+      yieldResult.textContent = '-';
+      saveTruckButton.disabled = true;
+    }
+
+    function updateTruckTable() {
+      truckDataBody.innerHTML = '';
+
+      dailyData.forEach(truck => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${truck.loadNumber || ''}</td>
+          <td>${(truck.startValue ?? 0).toFixed(2)}</td>
+          <td>${(truck.endValue ?? 0).toFixed(2)}</td>
+          <td>${(truck.length ?? 0).toFixed(2)}</td>
+          <td>${(truck.width ?? 0).toFixed(2)}</td>
+          <td>${(truck.area ?? 0).toFixed(2)}</td>
+          <td>${(truck.tonnage ?? 0).toFixed(2)}</td>
+          <td>${(truck.weight ?? 0).toFixed(2)}</td>
+          <td>${(truck.yield ?? 0).toFixed(2)}</td>
+          <!-- 2. No Time column -->
+          <td>${truck.date || ''}</td>
+          <td><span class="delete-btn" data-id="${truck.id}">✖</span></td>
+        `;
+        truckDataBody.appendChild(row);
+      });
+
+      // Delete handlers
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          if (id) deleteEntry(id);
+        });
+      });
+
+      // Update table footer
+      updateFooterTotals();
+    }
+
+    function deleteEntry(id) {
+      const idx = dailyData.findIndex(t => t.id === id);
+      if (idx === -1) return;
+      const truck = dailyData[idx];
+      if (confirm(`Delete entry for Load ${truck.loadNumber}?`)) {
+        dailyData.splice(idx, 1);
+        saveData();
+        updateTruckTable();
+        updateTotals();
+      }
+    }
+
+    function updateFooterTotals() {
+      const totalLengthValue = dailyData.reduce((sum, t) => sum + (t.length || 0), 0);
+      const totalAreaValue = dailyData.reduce((sum, t) => sum + (t.area || 0), 0);
+      const totalTonnageValue = dailyData.reduce((sum, t) => sum + (t.tonnage || 0), 0);
+      const totalWeightValue = dailyData.reduce((sum, t) => sum + (t.weight || 0), 0);
+      const avgYieldValue = (totalAreaValue > 0) ? (totalWeightValue / totalAreaValue) : 0;
+
+      totalLength.textContent = totalLengthValue.toFixed(2);
+      totalAreaFoot.textContent = totalAreaValue.toFixed(2);
+      totalTonnageFoot.textContent = totalTonnageValue.toFixed(2);
+      totalWeightFoot.textContent = totalWeightValue.toFixed(2);
+      avgYieldFoot.textContent = avgYieldValue.toFixed(2);
+    }
+
+    function updateTotals() {
+      const numTrucks = dailyData.length;
+      const totalAreaValue = dailyData.reduce((sum, t) => sum + (t.area || 0), 0);
+      const totalWeightValue = dailyData.reduce((sum, t) => sum + (t.weight || 0), 0);
+      const avgYieldVal = totalAreaValue > 0 ? totalWeightValue / totalAreaValue : 0;
+
+      totalTrucks.textContent = numTrucks;
+      totalArea.textContent = totalAreaValue.toFixed(2);
+      totalWeight.textContent = totalWeightValue.toFixed(2);
+      averageYield.textContent = avgYieldVal.toFixed(2);
+    }
+
+    function exportToCSV() {
+      // 13. Exclude the three new calculators from CSV => we only export dailyData
+      if (dailyData.length === 0) {
+        alert('No data to export');
+        return;
+      }
+
+      let csvContent = 'Date,Load Number,Start Sta.,End Sta.,Length (ft),Width (ft),Area (sq yd),Tonnage (tons),Weight (lbs),Yield (lbs/sq yd)\n';
+
+      dailyData.forEach(item => {
+        const row = [
+          item.date || '',
+          item.loadNumber || '',
+          (item.startValue ?? 0).toFixed(2),
+          (item.endValue ?? 0).toFixed(2),
+          (item.length ?? 0).toFixed(2),
+          (item.width ?? 0).toFixed(2),
+          (item.area ?? 0).toFixed(2),
+          (item.tonnage ?? 0).toFixed(2),
+          (item.weight ?? 0).toFixed(2),
+          (item.yield ?? 0).toFixed(2)
+        ].join(',');
+        csvContent += row + '\n';
+      });
+
+      // Add totals row at the end
+      const totalLengthValue = dailyData.reduce((sum, t) => sum + (t.length || 0), 0);
+      const totalAreaValue = dailyData.reduce((sum, t) => sum + (t.area || 0), 0);
+      const totalTonnageValue = dailyData.reduce((sum, t) => sum + (t.tonnage || 0), 0);
+      const totalWeightValue = dailyData.reduce((sum, t) => sum + (t.weight || 0), 0);
+      const avgYieldValue = totalAreaValue > 0 ? totalWeightValue / totalAreaValue : 0;
+
+      csvContent += [
+        'TOTALS',
+        '',
+        '',
+        '',
+        totalLengthValue.toFixed(2),
+        '',
+        totalAreaValue.toFixed(2),
+        totalTonnageValue.toFixed(2),
+        totalWeightValue.toFixed(2),
+        avgYieldValue.toFixed(2)
+      ].join(',') + '\n';
+
+      const encodedUri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      const today = new Date().toISOString().split('T')[0];
+      link.setAttribute('download', `yield_data_${today}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function loadData() {
+      const savedDate = localStorage.getItem('asphaltYieldDate');
+      const savedData = localStorage.getItem('asphaltYieldData');
+      const savedEndValue = localStorage.getItem('lastEndValue');
+      const savedWidth = localStorage.getItem('lastWidth');
+
+      // Load last-end-value and width
+      if (savedEndValue) {
+        lastEndValue = parseFloat(savedEndValue);
+        startValueInput.value = lastEndValue.toFixed(2);
+      }
+      if (savedWidth) {
+        lastWidth = parseFloat(savedWidth);
+        widthInput.value = lastWidth.toFixed(2);
+      }
+
+      // If data is for the same date in local storage, use it; otherwise archive
+      if (savedDate === currentDate && savedData) {
+        try {
+          dailyData = JSON.parse(savedData);
+        } catch (err) {
+          console.error('Error parsing saved data:', err);
+          dailyData = [];
+        }
+      } else if (savedDate && savedDate !== currentDate) {
+        // If we have a saved date that isn't today, use that date instead of today
+        // This prevents accidental archiving when loading existing work
+        if (savedDate) {
+          currentDate = savedDate;
+          currentDateDisplay.textContent = formatDateForDisplay(currentDate);
+        }
+        
+        try {
+          if (savedData) {
+            dailyData = JSON.parse(savedData);
+          }
+        } catch (err) {
+          console.error('Error parsing saved data:', err);
+          dailyData = [];
+        }
+      }
+    }
+    
+    function saveData() {
+      localStorage.setItem('asphaltYieldData', JSON.stringify(dailyData));
+      localStorage.setItem('asphaltYieldDate', currentDate);
+      if (lastEndValue !== null) {
+        localStorage.setItem('lastEndValue', lastEndValue.toString());
+      }
+      if (lastWidth !== null) {
+        localStorage.setItem('lastWidth', lastWidth.toString());
+      }
+    }
+    
+    function archiveData() {
+      let archives = JSON.parse(localStorage.getItem('asphaltYieldArchives') || '{}');
+      const dataToArchive = localStorage.getItem('asphaltYieldData');
+      if (dataToArchive && currentDate) {
+        archives[currentDate] = JSON.parse(dataToArchive);
+        localStorage.setItem('asphaltYieldArchives', JSON.stringify(archives));
+      }
+    }
+    
+    function startNewDay() {
+      if (confirm('Start a new day? This will archive current data.')) {
+        archiveData();
+        dailyData = [];
+        lastEndValue = null;
+        lastWidth = null;
+        
+        // Update to new date
+        currentDate = new Date().toISOString().split('T')[0];
+        currentDateDisplay.textContent = formatDateForDisplay(currentDate);
+        
+        resetFormForNextTruck();
+        updateTruckTable();
+        updateTotals();
+        saveData();
+      }
+    }
+    
+    // Save on page unload
+    window.addEventListener('beforeunload', saveData);
+    
+    /***********************************************************
+     * Additional Calculators (Do NOT store results in CSV/data)
+     ***********************************************************/
+    
+    // 10. Paver Speed Calculator
+    function calculatePaverSpeed() {
+      const R_p = parseFloat(paverProdRate.value) || 0;
+      const W = parseFloat(paverWidth.value) || 0;
+      const A = parseFloat(paverYield.value) || 0;
+
+      if (R_p <= 0 || W <= 0 || A <= 0) {
+        paverSpeedResult.textContent = '-';
+        return;
+      }
+      // L = (2000/9) * W * A
+      const L = (2000 / 9) * W * A;
+      // V = (R_p * L) / 60
+      const V = (R_p * L) / 60;
+      paverSpeedResult.textContent = V.toFixed(2);
+    }
+
+    // 11. Projected Paving Length
+    function calculateProjectedLength() {
+      const T = parseFloat(projTons.value) || 0; 
+      const LW = parseFloat(projLaneWidth.value) || 0;
+      const Y = parseFloat(projYield.value) || 0;
+
+      if (T <= 0 || LW <= 0 || Y <= 0) {
+        projLengthResult.textContent = '-';
+        return;
+      }
+
+      // Projected Paving Length = (Tons / ( (((LaneWidth*100)/9)*Yield )/2000 )) * 100
+      // Denominator: ( ( (LW*100)/9 ) * Y ) / 2000
+      const denominator = (((LW * 100) / 9) * Y) / 2000;
+      const projLength = (T / denominator) * 100;
+      projLengthResult.textContent = projLength.toFixed(2);
+    }
+
+    // 12. Tonnage Calculator (HMA Usage)
+    function calculateTonnageUsed() {
+      const L = parseFloat(tonLength.value) || 0;
+      const W = parseFloat(tonWidth.value) || 0;
+      const D = parseFloat(tonDepth.value) || 0;
+
+      if (L <= 0 || W <= 0 || D <= 0) {
+        tonCalcResult.textContent = '-';
+        return;
+      }
+      // Tons Used = ((L * W / 9) * 110 * D) / 2000
+      const areaYd2 = (L * W) / 9; // Convert to sq yd
+      const lbs = areaYd2 * 110 * D; // 110 lbs per inch-depth per sq yd
+      const tonsUsed = lbs / 2000;
+      tonCalcResult.textContent = tonsUsed.toFixed(2);
+    }
+  </script>
+  
+  <!-- Add JavaScript for Hamburger Menu -->
+  <script>
+    // Hamburger Menu Functionality
+    const hamburgerIcon = document.querySelector('.hamburger-icon');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.overlay');
+    const menuItems = document.querySelectorAll('.sidebar-menu li');
+    
+    // Toggle menu open/close
+    hamburgerIcon.addEventListener('click', toggleMenu);
+    overlay.addEventListener('click', closeMenu);
+    
+    // Menu item click handling
+    menuItems.forEach(item => {
+      item.addEventListener('click', function() {
+        const tabId = this.getAttribute('data-tab');
+        
+        // Update active class in sidebar
+        menuItems.forEach(mi => mi.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Update tab content
+        tabContents.forEach(tc => tc.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        
+        // Close the menu after selection
+        closeMenu();
+      });
+    });
+    
+    function toggleMenu() {
+      hamburgerIcon.classList.toggle('open');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
+    }
+    
+    function closeMenu() {
+      hamburgerIcon.classList.remove('open');
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    }
+  </script>
+  
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('Service Worker registered successfully:', registration.scope);
+          })
+          .catch(error => {
+            console.error('Service Worker registration failed:', error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
