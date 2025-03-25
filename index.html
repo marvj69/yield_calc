@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="apple-touch-fullscreen" content="yes" />
   
   <!-- 1. Renamed the application. -->
   <title>HMA Paving Control</title>
@@ -156,7 +159,7 @@
 
     .flex-container > * {
       flex: 1;
-      min-width: 300px; /* Ensure minimum width for readability */
+      min-width: 280px; /* Reduced from 300px to allow more flexibility */
     }
 
     .input-section {
@@ -183,9 +186,9 @@
 
     .current-results, .total-results {
       background-color: var(--input-bg);
-      padding: 10px;
+      padding: 15px; /* Increased from 10px */
       border-radius: 5px;
-      margin-bottom: 0; /* Remove bottom margin since we're using flex gap */
+      margin-bottom: 15px; /* Increased from 0 */
       transition: background-color 0.3s ease;
     }
 
@@ -329,6 +332,8 @@
       .form-group input {
         padding: 4px;
         font-size: 0.8rem;
+        min-width: 0; /* Allow inputs to shrink as needed */
+        width: 100%; /* Ensure inputs use full width of their container */
       }
       
       /* Create two columns for results */
@@ -408,6 +413,8 @@
       background-color: var(--input-bg);
       color: var(--text-color);
       transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+      width: 100%; /* Make inputs use full width of container */
+      box-sizing: border-box; /* Include padding and border in the width */
     }
 
     button {
@@ -432,12 +439,14 @@
     .button-group {
       display: flex;
       gap: 5px;
-      margin-top: 10px;
+      margin-top: 20px; /* Increased from 10px */
+      margin-bottom: 20px; /* Added bottom margin */
+      justify-content: center; /* Center the buttons horizontally */
     }
 
     /* Results Sections */
     .results-section {
-      margin-top: 10px;
+      margin-top: 20px; /* Increased from 10px */
     }
 
     /* Add hamburger menu styles */
@@ -455,7 +464,7 @@
       height: 23px;
       position: relative;
       transform: rotate(0deg);
-      transition: .5s ease-in-out;
+      transition: .3s ease-in-out;
     }
 
     .hamburger-icon span {
@@ -468,7 +477,7 @@
       opacity: 1;
       left: 0;
       transform: rotate(0deg);
-      transition: .25s ease-in-out, background-color 0.3s ease;
+      transition: .15s ease-in-out, background-color 0.3s ease;
     }
 
     .hamburger-icon span:nth-child(1) {
@@ -485,17 +494,17 @@
 
     .hamburger-icon.open span:nth-child(1) {
       top: 10px;
-      transform: rotate(135deg);
+      transform: rotate(45deg);
     }
 
     .hamburger-icon.open span:nth-child(2) {
       opacity: 0;
-      left: -60px;
+      left: -30px;
     }
 
     .hamburger-icon.open span:nth-child(3) {
       top: 10px;
-      transform: rotate(-135deg);
+      transform: rotate(-45deg);
     }
 
     .sidebar {
@@ -690,6 +699,287 @@
       right: auto;
       color: rgba(255, 255, 255, 0.8);
     }
+
+    /* Calculator results styling - apply at all screen sizes */
+    #paverSpeedTab .results-container,
+    #projLengthTab .results-container,
+    #tonnageTab .results-container {
+      margin: 15px auto;
+      max-width: 300px;
+      text-align: center;
+      width: 100%;
+    }
+    
+    #paverSpeedTab .current-results,
+    #projLengthTab .current-results,
+    #tonnageTab .current-results {
+      background-color: var(--input-bg);
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--input-border);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    #paverSpeedResult,
+    #projLengthResult,
+    #tonCalcResult {
+      font-size: 1.4rem;
+      font-weight: bold;
+      /* Change the color to be blue in light mode */
+      color: var(--primary) !important;
+      display: inline-block;
+      padding: 2px 10px;
+      /* Update background color to match the blue */
+      background-color: rgba(43, 87, 151, 0.1) !important;
+      border-radius: 4px;
+      min-width: 80px;
+      text-align: right;
+    }
+    
+    /* Keep the accent color for dark mode */
+    [data-theme="dark"] #paverSpeedResult,
+    [data-theme="dark"] #projLengthResult,
+    [data-theme="dark"] #tonCalcResult {
+      color: var(--accent) !important;
+      background-color: rgba(237, 125, 49, 0.1) !important;
+    }
+    
+    #paverSpeedTab .result-row,
+    #projLengthTab .result-row,
+    #tonnageTab .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 5px;
+    }
+
+    /* Additional styling for mobile calculators */
+    @media (max-width: 768px) {
+      /* Adjust container and tab content padding for full width */
+      .container {
+        padding: 2px;
+      }
+      
+      .tab-content {
+        padding: 2px;
+      }
+      
+      /* Apply full width to main yield calculator too */
+      #yieldTab .flex-container {
+        flex-direction: column;
+        gap: 8px;
+        margin: 0;
+        width: 100%;
+      }
+      
+      #yieldTab .input-section,
+      #yieldTab .results-container,
+      #yieldTab .current-results,
+      #yieldTab .total-results {
+        width: 100%;
+        margin: 0 0 8px 0;
+        box-sizing: border-box;
+      }
+      
+      #yieldTab .button-group {
+        width: 100%;
+      }
+      
+      /* Common styling for all calculator tabs */
+      #paverSpeedTab .flex-container,
+      #projLengthTab .flex-container,
+      #tonnageTab .flex-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 0;
+        width: 100%;
+      }
+      
+      #paverSpeedTab .input-section,
+      #projLengthTab .input-section,
+      #tonnageTab .input-section {
+        padding: 8px;
+        margin: 0 0 5px 0;
+        background-color: var(--input-bg);
+        border-radius: 5px;
+        border: 1px solid var(--input-border);
+        width: 100%; 
+        box-sizing: border-box;
+      }
+      
+      /* Keep result containers centered on mobile too */
+      #paverSpeedTab .results-container,
+      #projLengthTab .results-container,
+      #tonnageTab .results-container {
+        /* Reaffirm the centering for mobile */
+        margin: 15px auto;
+        /* Inherit max-width from the main style */
+      }
+      
+      /* Make tab content use full width */
+      #paverSpeedTab,
+      #projLengthTab,
+      #tonnageTab {
+        padding: 3px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+    
+      #paverSpeedTab h2,
+      #projLengthTab h2,
+      #tonnageTab h2 {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+        text-align: center;
+        width: 100%;
+      }
+      
+      #paverSpeedTab h3,
+      #projLengthTab h3,
+      #tonnageTab h3 {
+        font-size: 0.9rem;
+        margin: 0 0 5px 0;
+        text-align: center;
+        width: 100%;
+      }
+      
+      /* Create two columns for input fields in calculator tabs */
+      #paverSpeedTab .input-grid,
+      #projLengthTab .input-grid,
+      #tonnageTab .input-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        width: 100%;
+      }
+      
+      /* Ensure form elements are compact but fully visible */
+      #paverSpeedTab .form-group,
+      #projLengthTab .form-group,
+      #tonnageTab .form-group {
+        margin-bottom: 5px;
+        width: 100%;
+      }
+      
+      #paverSpeedTab .form-group label,
+      #projLengthTab .form-group label,
+      #tonnageTab .form-group label {
+        font-size: 0.75rem;
+        margin-bottom: 3px;
+        display: block;
+      }
+      
+      #paverSpeedTab .form-group input,
+      #projLengthTab .form-group input,
+      #tonnageTab .form-group input {
+        font-size: 0.8rem;
+        padding: 5px;
+        height: 2.2em;
+        width: 100%;
+        box-sizing: border-box;
+        min-width: 0; /* Allow inputs to shrink as needed */
+      }
+      
+      /* Make result text more prominent */
+      #paverSpeedResult,
+      #projLengthResult,
+      #tonCalcResult {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: var(--primary);
+        display: inline-block;
+        padding: 2px 10px;
+        background-color: rgba(43, 87, 151, 0.1);
+        border-radius: 4px;
+        min-width: 80px;
+        text-align: right;
+      }
+      
+      /* Keep the accent color for dark mode on mobile too */
+      [data-theme="dark"] #paverSpeedResult,
+      [data-theme="dark"] #projLengthResult,
+      [data-theme="dark"] #tonCalcResult {
+        color: var(--accent);
+        background-color: rgba(237, 125, 49, 0.1);
+      }
+      
+      /* Improve result row layout */
+      #paverSpeedTab .result-row,
+      #projLengthTab .result-row,
+      #tonnageTab .result-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 5px;
+      }
+    }
+
+    @media (max-width: 320px) {
+      /* For very small screens, switch to single column */
+      #paverSpeedTab .input-grid,
+      #projLengthTab .input-grid,
+      #tonnageTab .input-grid,
+      .input-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      /* Ensure smaller results containers remain centered */
+      #paverSpeedTab .results-container,
+      #projLengthTab .results-container,
+      #tonnageTab .results-container {
+        max-width: 95%;
+        padding: 0 5px;
+      }
+      
+      /* Make result values fit better on tiny screens */
+      #paverSpeedResult,
+      #projLengthResult, 
+      #tonCalcResult {
+        font-size: 1.2rem;
+        min-width: 60px;
+      }
+      
+      /* Adjust result rows for tiny screens */
+      #paverSpeedTab .result-row,
+      #projLengthTab .result-row,
+      #tonnageTab .result-row {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      /* Labels should be full width on tiny screens */
+      #paverSpeedTab .result-label,
+      #projLengthTab .result-label,
+      #tonnageTab .result-label {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 3px;
+      }
+      
+      .form-group input {
+        min-width: 0; /* Remove minimum width completely */
+        font-size: 0.75rem; /* Make text slightly smaller */
+        padding: 3px; /* Reduce padding further */
+      }
+      
+      .form-group label {
+        font-size: 0.7rem; /* Make labels smaller too */
+      }
+      
+      /* Further reduce padding for tiny screens */
+      .input-section,
+      .current-results, 
+      .total-results {
+        padding: 4px;
+      }
+      
+      /* Smaller headings */
+      h2 {
+        font-size: 0.9rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -704,10 +994,10 @@
   
   <div class="sidebar">
     <ul class="sidebar-menu">
-      <li class="active" data-tab="yieldTab">Yield Calculator</li>
+      <li class="active" data-tab="yieldTab">Yield Calc</li>
       <li data-tab="dataTab">Data History</li>
-      <li data-tab="paverSpeedTab">Paver Speed</li>
-      <li data-tab="projLengthTab">Projected Length</li>
+      <li data-tab="paverSpeedTab">Paver Speed Calc</li>
+      <li data-tab="projLengthTab">Projected Length Calc</li>
       <li data-tab="tonnageTab">Tonnage Calc</li>
       <li id="darkModeToggle" class="settings-item">Dark Mode <span class="toggle-switch" id="darkModeSwitch"></span></li>
     </ul>
@@ -724,22 +1014,7 @@
     
     <!-- Tab Navigation -->
     <div class="tab-container">
-      <div class="tab-buttons">
-        <!-- Core Yield Calculator Tab -->
-        <button class="tab-button active" data-tab="yieldTab">Yield Calculator</button>
-
-        <!-- Data History Tab -->
-        <button class="tab-button" data-tab="dataTab">Data History</button>
-
-        <!-- 10. New Paver Speed Calculator -->
-        <button class="tab-button" data-tab="paverSpeedTab">Paver Speed</button>
-
-        <!-- 11. New Projected Paving Length Calculator -->
-        <button class="tab-button" data-tab="projLengthTab">Projected Length</button>
-
-        <!-- 12. New Tonnage (HMA Usage) Calculator -->
-        <button class="tab-button" data-tab="tonnageTab">Tonnage Calc</button>
-      </div>
+    
 
       <!-- ===== Yield Calculator Tab Content ===== -->
       <div class="tab-content active" id="yieldTab">
@@ -754,27 +1029,27 @@
               
               <div class="form-group">
                 <label for="truckNumber">Load Number:</label>
-                <input type="text" id="truckNumber" placeholder="Enter load identifier" />
+                <input type="number" id="truckNumber" min="0" step="1" placeholder="Enter load identifier" inputmode="numeric" pattern="[0-9]*" />
               </div>
 
               <div class="form-group">
                 <label for="truckTonnage">Truck Tonnage (tons):</label>
-                <input type="number" id="truckTonnage" step="0.01" min="0" placeholder="Enter tonnage" />
+                <input type="number" id="truckTonnage" step="0.01" min="0" placeholder="Enter tonnage" inputmode="decimal" />
               </div>
 
               <div class="form-group">
                 <label for="startValue">Start Sta.:</label>
-                <input type="number" id="startValue" step="0.01" min="0" placeholder="Enter start station" />
+                <input type="number" id="startValue" step="0.01" min="0" placeholder="Enter start station" inputmode="decimal" />
               </div>
 
               <div class="form-group">
                 <label for="endValue">End Sta.:</label>
-                <input type="number" id="endValue" step="0.01" min="0" placeholder="Enter end station" />
+                <input type="number" id="endValue" step="0.01" min="0" placeholder="Enter end station" inputmode="decimal" />
               </div>
 
               <div class="form-group">
                 <label for="width">Width (feet):</label>
-                <input type="number" id="width" step="0.01" min="0" placeholder="Enter width" />
+                <input type="number" id="width" step="0.01" min="0" placeholder="Enter width" inputmode="decimal" />
               </div>
 
               <div class="form-group">
@@ -947,26 +1222,26 @@
           <div class="input-section">
             <div class="input-grid">
               <div class="form-group">
-                <label for="paverProdRate">Plant Production Rate (R<sub>p</sub>, tons/hour):</label>
-                <input type="number" id="paverProdRate" step="0.01" min="0" />
+                <label for="paverProdRate">Production Rate(R/p):</label>
+                <input type="number" id="paverProdRate" step="0.01" min="0" placeholder="tons/hour" inputmode="decimal" />
               </div>
               <div class="form-group">
-                <label for="paverWidth">Pavement Width (W, feet):</label>
-                <input type="number" id="paverWidth" step="0.01" min="0" />
+                <label for="paverWidth">Pavement Width (W):</label>
+                <input type="number" id="paverWidth" step="0.01" min="0" placeholder="feet" inputmode="decimal" />
               </div>
               <div class="form-group">
-                <label for="paverYield">Application Rate (A, lbs/sq yd):</label>
-                <input type="number" id="paverYield" step="0.01" min="0" />
+                <label for="paverYield">Application Rate (A):</label>
+                <input type="number" id="paverYield" step="0.01" min="0" placeholder="lbs/sq yd" inputmode="decimal" />
               </div>
             </div>
           </div>
-          <div class="results-container">
-            <div class="current-results">
-              <h3>Result</h3>
-              <div class="result-row">
-                <span class="result-label">Paver Speed (feet/minute):</span>
-                <span id="paverSpeedResult">-</span>
-              </div>
+        </div>
+        <div class="results-container">
+          <div class="current-results">
+            <h3>Result</h3>
+            <div class="result-row">
+              <span class="result-label">Paver Speed:</span>
+              <span><span id="paverSpeedResult">-</span> feet/minute</span>
             </div>
           </div>
         </div>
@@ -974,7 +1249,7 @@
 
       <!-- 11. Projected Paving Length Calculator Tab -->
       <div class="tab-content" id="projLengthTab">
-        <h2>Projected Paving Length</h2>
+        <h2>Projected Paving Length Calculator</h2>
         <!-- Projected Paving Length = ( Tons / ( (((LaneWidth*100)/9)*Yield) / 2000 ) ) * 100 -->
         <!-- Required Inputs: Tons, LaneWidth, Yield -->
         <div class="flex-container">
@@ -982,25 +1257,25 @@
             <div class="input-grid">
               <div class="form-group">
                 <label for="projTons">Projected Daily Tons:</label>
-                <input type="number" id="projTons" step="0.01" min="0" />
+                <input type="number" id="projTons" step="0.01" min="0" placeholder="tons" inputmode="decimal" />
               </div>
               <div class="form-group">
-                <label for="projLaneWidth">Lane Width (LaneWidth, feet):</label>
-                <input type="number" id="projLaneWidth" step="0.01" min="0" />
+                <label for="projLaneWidth">Lane Width:</label>
+                <input type="number" id="projLaneWidth" step="0.01" min="0" placeholder="feet" inputmode="decimal" />
               </div>
               <div class="form-group">
-                <label for="projYield">Current Actual Application Rate (Yield, lbs/sq yd):</label>
-                <input type="number" id="projYield" step="0.01" min="0" />
+                <label for="projYield">Application Rate:</label>
+                <input type="number" id="projYield" step="0.01" min="0" placeholder="lbs/sq yd" inputmode="decimal" />
               </div>
             </div>
           </div>
-          <div class="results-container">
-            <div class="current-results">
-              <h3>Result</h3>
-              <div class="result-row">
-                <span class="result-label">Projected Length (feet):</span>
-                <span id="projLengthResult">-</span>
-              </div>
+        </div>
+        <div class="results-container">
+          <div class="current-results">
+            <h3>Result</h3>
+            <div class="result-row">
+              <span class="result-label">Projected Length:</span>
+              <span><span id="projLengthResult">-</span> feet</span>
             </div>
           </div>
         </div>
@@ -1008,32 +1283,32 @@
 
       <!-- 12. Tonnage (HMA Usage) Calculator Tab -->
       <div class="tab-content" id="tonnageTab">
-        <h2>HMA Usage (Tonnage) Calculator</h2>
+        <h2>HMA Usage Calculator</h2>
         <!-- Tons Used = ((Length * Width / 9) * 110 * Depth) / 2000 -->
         <div class="flex-container">
           <div class="input-section">
             <div class="input-grid">
               <div class="form-group">
-                <label for="tonLength">Length (feet):</label>
-                <input type="number" id="tonLength" step="0.01" min="0" />
+                <label for="tonLength">Length:</label>
+                <input type="number" id="tonLength" step="0.01" min="0" placeholder="feet" inputmode="decimal" />
               </div>
               <div class="form-group">
-                <label for="tonWidth">Width (feet):</label>
-                <input type="number" id="tonWidth" step="0.01" min="0" />
+                <label for="tonWidth">Width:</label>
+                <input type="number" id="tonWidth" step="0.01" min="0" placeholder="feet" inputmode="decimal" />
               </div>
               <div class="form-group">
-                <label for="tonDepth">Depth (inches):</label>
-                <input type="number" id="tonDepth" step="0.01" min="0" />
+                <label for="tonDepth">Depth:</label>
+                <input type="number" id="tonDepth" step="0.01" min="0" placeholder="inches" inputmode="decimal" />
               </div>
             </div>
           </div>
-          <div class="results-container">
-            <div class="current-results">
-              <h3>Result</h3>
-              <div class="result-row">
-                <span class="result-label">Estimated Tons Used:</span>
-                <span id="tonCalcResult">-</span>
-              </div>
+        </div>
+        <div class="results-container">
+          <div class="current-results">
+            <h3>Result</h3>
+            <div class="result-row">
+              <span class="result-label">Estimated Tonnage:</span>
+              <span><span id="tonCalcResult">-</span> tons</span>
             </div>
           </div>
         </div>
@@ -1081,6 +1356,64 @@
         event.preventDefault();
       }
     }, { passive: false });
+
+    // Enforce numeric input validation for all number input fields
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get all number input fields
+      const numericInputs = document.querySelectorAll('input[type="number"]');
+      
+      // Add input validation to each numeric field
+      numericInputs.forEach(input => {
+        // Prevent non-numeric key presses
+        input.addEventListener('keypress', function(e) {
+          // Allow: backspace, delete, tab, escape, enter, decimal point, and numbers
+          const charCode = (e.which) ? e.which : e.keyCode;
+          
+          // Allow decimal point
+          if (charCode === 46 && this.value.indexOf('.') !== -1) {
+            e.preventDefault();
+            return false;
+          }
+          
+          // Allow numbers and decimal point only
+          if (charCode !== 46 && (charCode < 48 || charCode > 57)) {
+            e.preventDefault();
+            return false;
+          }
+          
+          // If zero is the first digit, ensure next character is a decimal point
+          if (this.value === '0' && charCode !== 46 && this.selectionStart === 1) {
+            this.value = '0.';
+            this.selectionStart = 2;
+            this.selectionEnd = 2;
+            e.preventDefault();
+            return false;
+          }
+          
+          return true;
+        });
+        
+        // Handle paste events to ensure only valid numeric data
+        input.addEventListener('paste', function(e) {
+          const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+          if (!/^-?\d*\.?\d*$/.test(pastedText)) {
+            e.preventDefault();
+          }
+        });
+        
+        // Check min value on blur
+        input.addEventListener('blur', function() {
+          if (this.value !== '') {
+            const min = parseFloat(this.min);
+            const value = parseFloat(this.value);
+            
+            if (!isNaN(min) && !isNaN(value) && value < min) {
+              this.value = min;
+            }
+          }
+        });
+      });
+    });
 
     // DOM Elements
     const currentDateDisplay = document.getElementById('currentDateDisplay');
@@ -1739,9 +2072,15 @@
         lastEndValue = parseFloat(savedEndValue);
         startValueInput.value = lastEndValue.toFixed(2);
       }
-      if (savedWidth) {
+      
+      // Only restore width for continuing the same day, not for new days
+      const isNewDay = savedDate !== currentDate;
+      if (savedWidth && !isNewDay) {
         lastWidth = parseFloat(savedWidth);
         widthInput.value = lastWidth.toFixed(2);
+      } else {
+        lastWidth = null;
+        widthInput.value = '';
       }
 
       // If data is for the same date in local storage, use it; otherwise archive
@@ -1825,6 +2164,9 @@
         updateDateDisplay();
         console.log("New day started with date:", currentDate);
         
+        // Clear the width input field
+        widthInput.value = '';
+        
         resetFormForNextTruck();
         updateTruckTable();
         updateTotals();
@@ -1883,7 +2225,7 @@
         return;
       }
 
-      // Projected Paving Length = (Tons / ( (((LaneWidth*100)/9)*Yield )/2000 )) * 100
+      // Projected Paving Length = (Tons / ( (((LaneWidth*100)/9)*Yield) / 2000 )) * 100
       // Denominator: ( ( (LW*100)/9 ) * Y ) / 2000
       const denominator = (((LW * 100) / 9) * Y) / 2000;
       const projLength = (T / denominator) * 100;
@@ -1921,12 +2263,22 @@
     const darkModeToggle = document.getElementById('darkModeToggle');
     const darkModeSwitch = document.getElementById('darkModeSwitch');
     
+    // Swipe detection variables
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const SWIPE_THRESHOLD = 70; // Minimum distance for a swipe to be registered
+    const EDGE_THRESHOLD = 30; // Maximum distance from edge to start a swipe
+    
     // Check for saved theme preference
     function initTheme() {
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
         darkModeSwitch.classList.add('active');
+      } else {
+        // Explicitly set to light theme if no theme or light theme is saved
+        document.documentElement.removeAttribute('data-theme');
+        darkModeSwitch.classList.remove('active');
       }
     }
     
@@ -1934,11 +2286,88 @@
     initTheme();
     
     // Toggle menu open/close
-    hamburgerIcon.addEventListener('click', toggleMenu);
+    hamburgerIcon.addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleMenu();
+    });
+    
+    // Handle hamburger icon touch events separately
+    const hamburgerSpans = hamburgerIcon.querySelectorAll('span');
+    
+    // Add touchend event to hamburger icon and its spans
+    [hamburgerIcon, ...hamburgerSpans].forEach(el => {
+      el.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleMenu();
+      }, { passive: false });
+    });
+    
+    // Handle overlay - simplified approach for more reliable closing
     overlay.addEventListener('click', closeMenu);
+    overlay.addEventListener('touchend', function(e) {
+      // Only handle direct touches on the overlay itself
+      if (e.target === overlay) {
+        e.preventDefault();
+        closeMenu();
+      }
+    }, { passive: false });
+    
+    // Add swipe detection to the document
+    document.addEventListener('touchstart', function(e) {
+      // Skip hamburger icon to avoid conflicts with its own handler
+      if (e.target.closest('.hamburger-icon')) {
+        return;
+      }
+      
+      touchStartX = e.changedTouches[0].screenX;
+      // Don't prevent default here to allow normal touch interactions
+    }, { passive: true });
+    
+    document.addEventListener('touchend', function(e) {
+      // Skip hamburger icon and overlay to avoid conflicts
+      if (e.target.closest('.hamburger-icon') || e.target === overlay) {
+        return;
+      }
+      
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+    
+    // Handle swipe gestures
+    function handleSwipe() {
+      const swipeDistance = touchEndX - touchStartX;
+      
+      // Right swipe (open menu) - only if starting near the left edge
+      if (swipeDistance > SWIPE_THRESHOLD && touchStartX < EDGE_THRESHOLD) {
+        openMenu();
+      }
+      
+      // Left swipe (close menu) - only if menu is open
+      else if (swipeDistance < -SWIPE_THRESHOLD && sidebar.classList.contains('open')) {
+        closeMenu();
+      }
+    }
+    
+    // Add swipe detection for the sidebar itself
+    sidebar.addEventListener('touchstart', function(e) {
+      // Allow events inside the sidebar to behave normally
+      e.stopPropagation();
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    sidebar.addEventListener('touchend', function(e) {
+      // Process swipe only if it's a left swipe (to close)
+      touchEndX = e.changedTouches[0].screenX;
+      const swipeDistance = touchEndX - touchStartX;
+      
+      if (swipeDistance < -SWIPE_THRESHOLD) {
+        closeMenu();
+      }
+    }, { passive: true });
     
     // Dark mode toggle
-    darkModeToggle.addEventListener('click', function() {
+    function toggleDarkMode() {
       // Toggle dark mode
       if (document.documentElement.getAttribute('data-theme') === 'dark') {
         document.documentElement.removeAttribute('data-theme');
@@ -1949,16 +2378,55 @@
         localStorage.setItem('theme', 'dark');
         darkModeSwitch.classList.add('active');
       }
+    }
+    
+    // Properly handle dark mode toggle clicks
+    darkModeToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleDarkMode();
     });
     
+    // Also handle direct click on the switch
+    darkModeSwitch.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleDarkMode();
+    });
+    
+    // Add touch support for the toggle switch
+    darkModeSwitch.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleDarkMode();
+    }, { passive: false });
+    
     // Menu item click handling
-    menuItems.forEach(item => {
+    const menuItemsArray = Array.from(menuItems);
+    let newMenuItems = [];
+    
+    menuItemsArray.forEach(item => {
+      // Skip dark mode toggle item completely
+      if (item.id === 'darkModeToggle') {
+        newMenuItems.push(item);
+        return;
+      }
+      
       if (!item.classList.contains('settings-item')) {
-        item.addEventListener('click', function() {
+        // Remove all existing event listeners by cloning and replacing the element
+        const newItem = item.cloneNode(true);
+        item.parentNode.replaceChild(newItem, item);
+        newMenuItems.push(newItem);
+        
+        // Add a single click handler - works for both mouse clicks and touch on most devices
+        newItem.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
           const tabId = this.getAttribute('data-tab');
           
-          // Update active class in sidebar
-          menuItems.forEach(mi => {
+          // Update active class in sidebar using the new references
+          newMenuItems.forEach(mi => {
             if (!mi.classList.contains('settings-item') && !mi.classList.contains('divider')) {
               mi.classList.remove('active');
             }
@@ -1969,9 +2437,16 @@
           tabContents.forEach(tc => tc.classList.remove('active'));
           document.getElementById(tabId).classList.add('active');
           
-          // Close the menu after selection
-          closeMenu();
+          // Force close the menu with a longer delay to ensure all other events are done
+          setTimeout(function() {
+            hamburgerIcon.classList.remove('open');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+          }, 50);
         });
+      } else if (item.id !== 'darkModeToggle') {
+        // For settings items (except dark mode toggle), add to our new array
+        newMenuItems.push(item);
       }
     });
     
@@ -1979,6 +2454,12 @@
       hamburgerIcon.classList.toggle('open');
       sidebar.classList.toggle('open');
       overlay.classList.toggle('open');
+    }
+    
+    function openMenu() {
+      hamburgerIcon.classList.add('open');
+      sidebar.classList.add('open');
+      overlay.classList.add('open');
     }
     
     function closeMenu() {
@@ -1995,10 +2476,46 @@
         navigator.serviceWorker.register('/sw.js')
           .then(registration => {
             console.log('Service Worker registered successfully:', registration.scope);
+            
+            // Check for updates to the service worker
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              
+              // Track the state changes of the new service worker
+              newWorker.addEventListener('statechange', () => {
+                // When the new service worker is installed and waiting
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('New version available! Refreshing page...');
+                  // Show a notification to the user (optional)
+                  if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('App Update', {
+                      body: 'A new version is available. The page will refresh shortly.'
+                    });
+                  }
+                  
+                  // Refresh the page after a short delay
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 1000);
+                }
+              });
+            });
+            
+            // Check if there's an existing service worker waiting
+            if (registration.waiting) {
+              console.log('New service worker waiting. Refreshing page...');
+              window.location.reload();
+            }
           })
           .catch(error => {
             console.error('Service Worker registration failed:', error);
           });
+          
+        // Listen for controlling service worker changes
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          console.log('New service worker activated. Reloading page for fresh content...');
+          window.location.reload();
+        });
       });
     }
   </script>
