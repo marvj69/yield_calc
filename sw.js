@@ -1,8 +1,12 @@
 // sw.js
 const CACHE_NAME = 'asphalt-yield-calculator-v5';
 const urlsToCache = [
-  '/',         // Cache the root URL (resolves to index.html)
-  '/index.html' // Explicitly cache index.html
+ "./", // Root path
+  "./index.html",
+  "./manifest.json",
+  "./icons/icon-192x192.png",
+  "./icons/icon-512x512.png",
+  "./service-worker.js"
 ];
 
 // Install event: Cache the specified resources
