@@ -95,5 +95,65 @@ HMA Paving Control is a Progressive Web Application (PWA) designed for asphalt p
 ## License
 This project is open-source and available under the MIT License.
 
+## Prerequisites
+- Modern web browser with JavaScript enabled
+- Local development server for testing
+- Basic understanding of construction/paving concepts
+- Minimum screen resolution of 320px width (mobile-responsive)
+
+## Browser Compatibility
+- Chrome/Chromium (Version 90+)
+- Firefox (Version 85+)
+- Safari (Version 14+)
+- Edge (Version 90+)
+- Mobile browsers (iOS Safari, Chrome for Android)
+
+## Security Considerations
+- All calculations are performed client-side
+- No sensitive data is transmitted to external servers
+- Data is stored locally in the browser's localStorage
+- Regular data backups recommended via CSV export
+- Clear browser data/cache to remove all stored information
+
+## Troubleshooting
+1. **App Not Loading**
+   - Ensure JavaScript is enabled
+   - Clear browser cache and reload
+   - Check internet connection for initial load
+   
+2. **Data Not Saving**
+   - Verify localStorage is not full
+   - Ensure browser permissions allow storage
+   - Export data regularly as backup
+
+3. **Calculation Issues**
+   - Verify input values are within reasonable ranges
+   - Check unit conversions (tons to lbs, feet to yards)
+   - Refresh page if calculator becomes unresponsive
+
+## Contributing
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### Code Style Guidelines
+- Use consistent indentation (2 spaces)
+- Follow JavaScript Standard Style
+- Comment complex calculations
+- Maintain mobile-first responsive design
+- Test across multiple browsers before submitting
+
+## Support and Contact
+For support, please:
+1. Check the troubleshooting guide above
+2. Search existing GitHub issues
+3. Create a new issue with:
+   - Browser and OS details
+   - Steps to reproduce the problem
+   - Expected vs actual behavior
+   - Screenshots if applicable
+
 ## Current Version
 Last updated: March 24, 2025
