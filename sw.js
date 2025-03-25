@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'asphalt-yield-calculator-v12';
+const CACHE_NAME = 'asphalt-yield-calculator-v13';
 const urlsToCache = [
  "./", // Root path
   "./index.html",
