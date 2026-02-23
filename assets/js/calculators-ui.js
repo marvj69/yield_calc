@@ -130,14 +130,18 @@
         });
 
         // Auto-fill toggle listener
-        autoFillToggle.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent li click handler
-            toggleAutoFill();
-        });
-        autoFillSwitch.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent li click handler
-            toggleAutoFill();
-        });
+        if (autoFillToggle) {
+            autoFillToggle.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent li click handler
+                toggleAutoFill();
+            });
+        }
+        if (autoFillSwitch) {
+            autoFillSwitch.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent li click handler
+                toggleAutoFill();
+            });
+        }
 
 
         currentMenuItems.forEach(item => {
@@ -191,10 +195,12 @@
 
     // Settings Modal Functions
     function openSettingsModal() {
+        if (!settingsModal) return;
         settingsModal.style.display = 'block';
         closeMenu(); // Ensure sidebar is closed when modal opens
     }
     function closeSettingsModalFunc() {
+        if (!settingsModal) return;
         settingsModal.style.display = 'none';
     }
 

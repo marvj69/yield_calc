@@ -224,11 +224,14 @@
         window.addEventListener('click', function(event) {
             if (event.target == archiveModal) closeArchiveModalFunc();
             if (event.target == aboutModal) closeAboutModalFunc();
-            if (event.target == settingsModal) closeSettingsModalFunc(); // Close settings modal on overlay click
+            if (settingsModal && event.target == settingsModal) closeSettingsModalFunc(); // Close settings modal on overlay click
         });
         document.querySelector('#archiveModal > .archive-modal-content').addEventListener('click', e => e.stopPropagation());
         document.querySelector('#aboutModal > .archive-modal-content').addEventListener('click', e => e.stopPropagation());
-        document.querySelector('#settingsModal > .archive-modal-content').addEventListener('click', e => e.stopPropagation()); // Prevent closing settings modal when clicking inside content
+        const settingsModalContent = document.querySelector('#settingsModal > .archive-modal-content');
+        if (settingsModalContent) {
+            settingsModalContent.addEventListener('click', e => e.stopPropagation()); // Prevent closing settings modal when clicking inside content
+        }
 
 
         // Additional Calculator listeners

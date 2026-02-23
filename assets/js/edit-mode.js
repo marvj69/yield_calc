@@ -599,6 +599,11 @@
     // Initialize auto-fill setting
     function initAutoFill() {
         const savedAutoFill = localStorage.getItem(AUTO_FILL_KEY);
+        if (!autoFillSwitch) {
+            autoFillEnabled = savedAutoFill !== 'false';
+            return;
+        }
+
         if (savedAutoFill === 'false') {
             autoFillEnabled = false;
             autoFillSwitch.classList.remove('active');
@@ -611,6 +616,12 @@
     // Toggle auto-fill setting
     function toggleAutoFill() {
         autoFillEnabled = !autoFillEnabled;
+
+        if (!autoFillSwitch) {
+            localStorage.setItem(AUTO_FILL_KEY, autoFillEnabled ? 'true' : 'false');
+            return;
+        }
+
         if (autoFillEnabled) {
             autoFillSwitch.classList.add('active');
             localStorage.setItem(AUTO_FILL_KEY, 'true');
@@ -621,5 +632,9 @@
     }
 
     // Add listeners for settings modal close buttons
-    closeSettingsModal.addEventListener('click', closeSettingsModalFunc);
-    closeSettingsButton.addEventListener('click', closeSettingsModalFunc);
+    if (closeSettingsModal) {
+        closeSettingsModal.addEventListener('click', closeSettingsModalFunc);
+    }
+    if (closeSettingsButton) {
+        closeSettingsButton.addEventListener('click', closeSettingsModalFunc);
+    }
