@@ -307,10 +307,10 @@
       const tonnage = parseFloat(truckTonnageInput.value) || 0;
 
       if (length <= 0 || width <= 0 || tonnage <= 0) {
-        lengthResult.textContent = '-'; // NEW
-        areaResult.textContent = '-';
-        weightResult.textContent = '-';
-        yieldResult.textContent = '-';
+        if (lengthResult) lengthResult.textContent = '-';
+        if (areaResult) areaResult.textContent = '-';
+        if (weightResult) weightResult.textContent = '-';
+        if (yieldResult) yieldResult.textContent = '-';
         checkSaveButtonState(); // Disable save if yield is invalid
         return;
       }
@@ -320,10 +320,10 @@
       const weightInPounds = tonnage * TONS_TO_POUNDS;
       const yieldVal = areaInSqYd > 0 ? (weightInPounds / areaInSqYd) : 0;
 
-      lengthResult.textContent = length.toFixed(2); // NEW
-      areaResult.textContent = areaInSqYd.toFixed(2);
-      weightResult.textContent = `${tonnage.toFixed(2)} / ${weightInPounds.toLocaleString()} lbs`;
-      yieldResult.textContent = yieldVal.toFixed(2);
+      if (lengthResult) lengthResult.textContent = length.toFixed(2);
+      if (areaResult) areaResult.textContent = areaInSqYd.toFixed(2);
+      if (weightResult) weightResult.textContent = `${tonnage.toFixed(2)} / ${weightInPounds.toLocaleString()} lbs`;
+      if (yieldResult) yieldResult.textContent = yieldVal.toFixed(2);
 
       checkSaveButtonState(); // Check if save can be enabled
     }
