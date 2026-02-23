@@ -1,0 +1,2261 @@
+    :root {
+      --primary: #2b5797;
+      --secondary: #4472c4;
+      --accent: #ed7d31;
+      --light: #f4f4f4;
+      --dark: #333;
+      --success: #5cb85c;
+      --danger: #d9534f;
+      --warning: #f0ad4e;
+
+      /* Light Mode Colors (default) */
+      --background: var(--light);
+      --card-bg: white;
+      --text-color: var(--dark);
+      --input-bg: #f9f9f9;
+      --input-border: #ddd;
+      --table-even: #f2f2f2;
+      --table-hover: #e2e2e2;
+      --border-color: #ddd;
+      --hamburger-color: var(--primary);
+      --mobile-nav-height: 68px;
+      --top-pill-offset: env(safe-area-inset-top, 0px);
+    }
+
+    /* Dark Mode Colors */
+    [data-theme="dark"] {
+      --background: #121212;
+      --card-bg: #1e1e1e;
+      --text-color: #e0e0e0;
+      --input-bg: #2d2d2d;
+      --input-border: #444;
+      --table-even: #2a2a2a;
+      --table-hover: #363636;
+      --border-color: #444;
+      --hamburger-color: var(--accent);
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      height: auto;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Avenir Next', 'Avenir', 'SF Pro Text', 'Segoe UI', sans-serif;
+      -webkit-touch-callout: none; /* Disable callout to save image etc on iOS */
+      -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text-color);
+      line-height: 1.4;
+      padding: 10px;
+      font-size: 14px; /* Reduced base font size */
+      min-height: 100dvh;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      touch-action: manipulation;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px;
+      padding-top: 5px; /* Reduced from 15px */
+      background: var(--card-bg);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      position: relative;
+      transition: background-color 0.3s ease;
+      min-height: calc(100dvh - 20px);
+      height: auto;
+      overflow: visible;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3px;
+      padding-bottom: 2px;
+      border-bottom: 1px solid var(--border-color);
+      padding-top: 0; /* Reduced from 5px */
+      transition: border-color 0.3s ease;
+      position: -webkit-sticky;
+      position: sticky;
+      top: var(--top-pill-offset);
+      z-index: 20;
+      height: 35px; /* Fix header height */
+      display: flex; /* Use flexbox */
+      justify-content: center; /* Center the date */
+      align-items: center; /* Vertically center content */
+      background-color: var(--card-bg);
+    }
+
+    .header-pill-content {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 0 40px;
+    }
+
+    h1 {
+      color: var(--primary);
+      font-size: 1.2rem; /* Reduced header font */
+      margin-bottom: 10px;
+    }
+
+    /* Tab Container Styling */
+    .tab-container {
+      margin-bottom: 10px;
+    }
+
+    .tab-buttons {
+      display: none; /* Hide the original tab buttons */
+    }
+
+    .tab-button {
+      flex: 1;
+      background-color: #e2e2e2;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .tab-button.active {
+      background-color: var(--primary);
+      color: #fff;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 10px;
+      max-height: none;
+      overflow: visible;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Add responsive layout styling for the side-by-side arrangement */
+    .flex-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .flex-container > * {
+      flex: 1;
+      min-width: 280px; /* Reduced from 300px to allow more flexibility */
+    }
+
+    .input-section {
+      background-color: var(--input-bg);
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      flex: 2; /* Give input section more space */
+      transition: background-color 0.3s ease;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .results-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .current-results, .run-summary-results, .day-summary-results { /* Updated class name */
+      background-color: var(--input-bg);
+      padding: 8px;
+      border-radius: 5px;
+      margin-bottom: 10px; /* Adjusted from 15px */
+      transition: background-color 0.3s ease;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2px;
+      font-size: 0.9rem; /* Slightly smaller result font */
+    }
+
+    .result-label {
+      font-weight: bold;
+      margin-right: 5px;
+    }
+
+    /* Data Table */
+    .data-table-container {
+      overflow-x: auto;
+      max-width: 100%;
+      margin-top: 10px;
+      max-height: calc(100vh - 250px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      text-align: center; /* Center child elements */
+    }
+
+    .truck-data-table {
+      width: 80% !important; /* More reasonable width that won't cause layout issues */
+      display: inline-block; /* Allow centering through text-align */
+      margin: 0 auto !important;
+      border-collapse: collapse;
+      min-width: unset !important;
+    }
+
+    .truck-data-table th,
+    .truck-data-table td {
+      padding: 6px; /* Reduced padding */
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      border-right: 1px solid rgba(221, 221, 221, 0.4); /* Lighter vertical line between columns */
+      font-size: 0.85rem; /* Reduced font size */
+      transition: border-color 0.3s ease;
+      /* 11. Improve Mobile Display: word break */
+      word-break: break-word;
+      white-space: normal; /* Allow wrapping */
+    }
+    
+    /* Remove border from last column */
+    .truck-data-table th:last-child,
+    .truck-data-table td:last-child {
+      border-right: none;
+    }
+    
+    /* Add slightly different border color for dark mode */
+    [data-theme="dark"] .truck-data-table th,
+    [data-theme="dark"] .truck-data-table td {
+      border-right: 1px solid rgba(68, 68, 68, 0.4);
+    }
+    
+    [data-theme="dark"] .truck-data-table th:last-child,
+    [data-theme="dark"] .truck-data-table td:last-child {
+      border-right: none;
+    }
+
+    /* 11. Improve Mobile Display: Adjust column widths (example) */
+    .truck-data-table th:nth-child(1), /* Load # */
+    .truck-data-table td:nth-child(1) { width: 10%; }
+    .truck-data-table th:nth-child(2), /* Start Sta */
+    .truck-data-table td:nth-child(2) { width: 12%; }
+    .truck-data-table th:nth-child(3), /* End Sta */
+    .truck-data-table td:nth-child(3) { width: 12%; }
+    .truck-data-table th:nth-child(4), /* Length */
+    .truck-data-table td:nth-child(4) { width: 10%; }
+    .truck-data-table th:nth-child(5), /* Width */
+    .truck-data-table td:nth-child(5) { width: 10%; }
+    /* Others can take remaining space */
+
+
+    .truck-data-table tr:nth-child(even) {
+      background-color: var(--table-even);
+      transition: background-color 0.3s ease;
+    }
+
+    .truck-data-table tr:hover {
+      background-color: var(--table-hover);
+      transition: background-color 0.3s ease;
+    }
+
+    .truck-data-table th {
+      background-color: var(--primary);
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 1; /* Ensure header stays above scrolling content */
+    }
+
+    .truck-data-table tfoot {
+      font-weight: bold;
+      background-color: var(--secondary);
+      color: #fff;
+    }
+
+    .truck-data-table tfoot td {
+      border-top: 2px solid var(--primary);
+    }
+
+    /* 10. Visual Separators for Archive */
+    .run-separator td {
+        border-top: 3px solid var(--primary) !important;
+        border-bottom: 1px solid var(--primary) !important;
+        background-color: var(--secondary) !important;
+        color: white !important;
+        font-weight: bold;
+        font-size: 0.8rem !important;
+        padding: 5px !important;
+        text-align: center;
+    }
+    .run-separator td span {
+        display: block;
+        margin-top: 3px;
+        font-weight: normal;
+        font-style: italic;
+        font-size: 0.75rem;
+    }
+
+
+    .delete-btn {
+      color: var(--danger);
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1.1rem;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .delete-btn:hover {
+      transform: scale(1.2);
+    }
+
+    /* Utility Classes */
+    .hidden {
+      display: none;
+    }
+
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* Added new CSS rules for responsive Today's Runs table */
+    .truck-data-table th,
+    .truck-data-table td {
+      white-space: nowrap;
+    }
+
+    @media (min-width: 600px) {
+      .input-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .input-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Mobile layout adjustments */
+    @media (max-width: 768px) {
+      .flex-container {
+        flex-direction: column; /* Stack vertically on mobile */
+      }
+
+      .flex-container > * {
+        min-width: 100%; /* Full width for children */
+        width: 100%;
+      }
+
+      .input-section, .results-container {
+        flex-basis: auto; /* Reset flex-basis */
+      }
+
+      /* Keep two columns for input grid if possible */
+      .input-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+      }
+
+      .form-group label {
+        font-size: 0.8rem;
+        margin-bottom: 2px;
+      }
+
+      .form-group input {
+        padding: 4px;
+        font-size: 0.8rem;
+        min-width: 0;
+        width: 100%;
+      }
+
+      /* Stack results vertically */
+      .results-container {
+        flex-direction: column;
+      }
+
+      .current-results, .run-summary-results, .day-summary-results {
+        flex-basis: auto;
+        padding: 4px;
+        margin-bottom: 4px;
+      }
+
+      /* Modify button stack behavior - keep horizontal for undo/save buttons but vertical for others */
+      .button-group {
+        flex-direction: row; /* Keep buttons horizontal by default */
+        align-items: stretch;
+        gap: 2px; /* Reduced gap for tighter spacing */
+      }
+      
+      /* Target only the button group in results container to keep those stacked */
+      .results-container .button-group {
+        flex-direction: column; /* Stack buttons vertically */
+        align-items: stretch; /* Make buttons full width */
+      }
+      
+      .results-container .button-group button {
+        width: 100%;
+        margin-bottom: 5px;
+      }
+      
+      .results-container .button-group button:last-child {
+        margin-bottom: 0;
+      }
+
+
+      .result-row {
+        font-size: 0.8rem;
+      }
+
+      h2 {
+        font-size: 1rem;
+        margin: 0 0 5px 0;
+      }
+
+      .container {
+        padding: 3px;
+        padding-top: 5px; /* Reduced top padding */
+      }
+
+      .tab-content {
+        padding: 3px;
+        max-height: none;
+        overflow: visible;
+      }
+
+      .input-section {
+        padding: 6px;
+        margin-bottom: 5px;
+      }
+
+      header {
+        margin-bottom: 5px;
+        padding-bottom: 2px;
+        height: auto;
+        min-height: 30px; /* Slightly reduce header height on mobile */
+      }
+
+      .current-date {
+        font-size: 0.8rem;
+      }
+      
+      .hamburger-menu {
+        margin-right: 0;
+      }
+
+       /* 11. Improve Mobile Display: Further optimization for data tables */
+      .truck-data-table th,
+      .truck-data-table td {
+          padding: 4px; /* Even smaller padding */
+          font-size: 0.75rem; /* Smaller font */
+      }
+      .truck-data-table tfoot td {
+          font-size: 0.8rem;
+      }
+       .data-table-container {
+           max-height: calc(100vh - 300px); /* Adjust based on other elements */
+       }
+
+      /* Make sure the table remains centered on mobile but adjust width for readability */
+      .data-table-container {
+        text-align: center;
+        overflow-x: auto;
+      }
+      
+      .truck-data-table {
+        width: 95% !important; /* Wider on mobile for readability */
+      }
+    }
+
+    /* Form & Input Styling */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
+
+    input, button, select {
+      padding: 5px;
+      font-size: 0.9rem;
+      border: 1px solid var(--input-border);
+      border-radius: 4px;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+      width: 100%; /* Make inputs use full width of container */
+      box-sizing: border-box; /* Include padding and border in the width */
+    }
+
+    button {
+      background-color: var(--primary);
+      color: #fff;
+      cursor: pointer;
+      border: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      margin-top: 5px;
+    }
+
+    button:hover {
+      background-color: var(--secondary);
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px; /* Increased gap */
+      margin-top: 15px; /* Adjusted from 20px */
+      margin-bottom: 10px; /* Adjusted from 20px */
+      justify-content: center; /* Center the buttons horizontally */
+      flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    }
+
+    /* Specific button styling */
+    .action-btn {
+      padding: 8px 12px; /* Standardized padding */
+      font-size: 0.95rem; /* Standardized font size */
+      font-weight: bold;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      flex: 1; /* Allow buttons to grow */
+      min-width: 120px; /* Minimum width */
+    }
+     .action-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .start-run-btn { background-color: #1e88e5; } /* Blue color for Start Run button in light mode */
+    [data-theme="dark"] .start-run-btn { background-color: var(--accent); } /* Keep accent color for dark mode */
+    .save-btn { background-color: var(--success); }
+    .undo-btn { background-color: var(--warning); color: var(--dark); }
+
+
+    /* Results Sections */
+    .results-section {
+      margin-top: 15px; /* Adjusted from 20px */
+    }
+
+    /* Add hamburger menu styles */
+    .hamburger-menu {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .hamburger-icon {
+      width: 30px;
+      height: 23px;
+      position: relative;
+      transform: rotate(0deg);
+      transition: .3s ease-in-out;
+    }
+
+    .hamburger-icon span {
+      display: block;
+      position: absolute;
+      height: 3px;
+      width: 100%;
+      background: var(--hamburger-color);
+      border-radius: 3px;
+      opacity: 1;
+      left: 0;
+      transform: rotate(0deg);
+      transition: .15s ease-in-out, background-color 0.3s ease;
+    }
+
+    .hamburger-icon span:nth-child(1) { top: 0px; }
+    .hamburger-icon span:nth-child(2) { top: 10px; }
+    .hamburger-icon span:nth-child(3) { top: 20px; }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background-color: var(--card-bg);
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      transition: left 0.3s;
+      z-index: 99;
+      padding-top: 60px;
+      overflow-y: auto;
+      color: var(--text-color);
+      transition: background-color 0.3s ease, left 0.3s, color 0.3s ease;
+    }
+
+    .sidebar-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 34px;
+      height: 34px;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      background-color: transparent;
+      color: var(--text-color);
+      font-size: 1.35rem;
+      line-height: 1;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar-close:hover {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .sidebar.open { left: 0; }
+    .sidebar-menu { list-style: none; padding: 0; }
+    .sidebar-menu li {
+      padding: 12px 15px; /* Slightly reduced padding */
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.95rem; /* Slightly smaller font */
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    .sidebar-menu li:hover { background-color: var(--accent); color: white; }
+
+    /* Removed #exportAllDataButton styles */
+
+    .sidebar-menu li.active {
+      background-color: var(--primary);
+      color: white;
+      border-left: 4px solid var(--accent);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      z-index: 98;
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.3s;
+    }
+    .overlay.open { visibility: visible; opacity: 1; }
+
+    /* Current date display */
+    .current-date {
+      text-align: center;
+      font-weight: bold;
+      color: var(--primary);
+      padding: 0; /* Remove padding */
+      font-size: 0.9rem;
+      margin: 0; /* Remove margin */
+    }
+    [data-theme="dark"] .current-date { color: var(--accent); }
+
+    /* Archive Modal Styles */
+    #archiveModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .archive-modal-content {
+      position: relative;
+      background-color: var(--card-bg);
+      margin: auto; /* Changed from 5% auto to auto for vertical centering */
+      padding: 15px; /* Reduced padding */
+      width: 95%; /* Wider */
+      max-width: 900px; /* Max width */
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      display: flex; /* Use flexbox for layout */
+      flex-direction: column;
+      max-height: 90vh; /* Limit height */
+      top: 50%; /* Position at 50% from the top */
+      transform: translateY(-50%); /* Move up by half of its height */
+    }
+
+    .archive-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #archiveModal .data-table-container {
+        flex-grow: 1; /* Allow table container to fill space */
+        max-height: calc(85vh - 150px); /* Adjust based on header/footer */
+        margin-bottom: 10px;
+        text-align: center; /* Center child elements including tables */
+    }
+
+
+    @media (max-width: 768px) {
+      .archive-modal-content {
+        margin: auto; /* Changed from 2% auto to auto for vertical centering */
+        padding: 10px;
+        width: 98%;
+        max-height: 95vh;
+      }
+       #archiveModal .data-table-container {
+           max-height: calc(90vh - 130px);
+       }
+    }
+
+    body.about-modal-open {
+      overflow: hidden;
+    }
+
+    #aboutModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      padding: calc(12px + env(safe-area-inset-top, 0px)) 12px calc(12px + env(safe-area-inset-bottom, 0px));
+      background: rgba(7, 17, 32, 0.58);
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+      overflow-y: auto;
+    }
+
+    #aboutModal .archive-modal-content {
+      top: auto;
+      transform: none;
+      margin: auto;
+      width: min(920px, 96%);
+      max-height: min(92dvh, 880px);
+      padding: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--input-border);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+      animation: aboutModalIn 0.22s ease-out;
+    }
+
+    @keyframes aboutModalIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #aboutModal .about-close-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 1.35rem;
+      line-height: 1;
+      font-weight: 700;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    #aboutModal .about-close-btn:hover {
+      background: rgba(255, 255, 255, 0.32);
+    }
+
+    #aboutModal .about-modal-header {
+      background: linear-gradient(140deg, var(--primary), var(--secondary));
+      color: #fff;
+      padding: 20px 54px 18px 20px;
+    }
+
+    #aboutModal .about-modal-eyebrow {
+      margin: 0 0 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    #aboutModal .about-modal-title {
+      margin: 0;
+      color: #fff;
+      font-size: 1.4rem;
+      line-height: 1.2;
+    }
+
+    #aboutModal .about-modal-subtitle {
+      margin: 8px 0 0;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.94);
+      max-width: 780px;
+    }
+
+    #aboutModal .about-feature-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    #aboutModal .about-feature-card {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    #aboutModal .about-feature-card h3 {
+      margin: 0 0 4px;
+      font-size: 0.88rem;
+      color: #fff;
+    }
+
+    #aboutModal .about-feature-card p {
+      margin: 0;
+      font-size: 0.8rem;
+      line-height: 1.35;
+      color: rgba(255, 255, 255, 0.94);
+    }
+
+    #aboutModal .about-modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 18px;
+      background-color: var(--card-bg);
+      display: grid;
+      gap: 12px;
+    }
+
+    #aboutModal .about-section-card {
+      background-color: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    #aboutModal .about-section-card h3 {
+      margin: 0;
+      color: var(--primary);
+      font-size: 1rem;
+    }
+
+    #aboutModal .about-list {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    #aboutModal .about-list li {
+      margin-bottom: 6px;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    #aboutModal .about-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    #aboutModal .about-modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px 16px;
+      border-top: 1px solid var(--input-border);
+      background-color: var(--card-bg);
+    }
+
+    #aboutModal .about-author-meta {
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text-color);
+    }
+
+    #aboutModal .about-author-meta p + p {
+      margin-top: 2px;
+    }
+
+    #aboutModal .about-author-meta a {
+      color: var(--secondary);
+      text-decoration: none;
+    }
+
+    #aboutModal .about-author-meta a:hover {
+      text-decoration: underline;
+    }
+
+    #aboutModal .about-modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    #aboutModal .about-btn {
+      width: auto;
+      min-width: 124px;
+      margin: 0;
+      padding: 9px 16px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #fff;
+    }
+
+    #aboutModal .about-btn-primary {
+      background-color: var(--primary);
+    }
+
+    #aboutModal .about-btn-secondary {
+      background-color: var(--secondary);
+    }
+
+    #aboutModal .about-btn:hover {
+      filter: brightness(1.06);
+    }
+
+    [data-theme="dark"] #aboutModal {
+      background: rgba(0, 0, 0, 0.68);
+    }
+
+    [data-theme="dark"] #aboutModal .about-feature-card {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 768px) {
+      #aboutModal {
+        padding: calc(8px + env(safe-area-inset-top, 0px)) 8px calc(8px + env(safe-area-inset-bottom, 0px));
+      }
+
+      #aboutModal .archive-modal-content {
+        width: 100%;
+        max-height: 94dvh;
+        border-radius: 12px;
+      }
+
+      #aboutModal .about-close-btn {
+        top: 10px;
+        right: 10px;
+        width: 32px;
+        height: 32px;
+      }
+
+      #aboutModal .about-modal-header {
+        padding: 16px 46px 14px 14px;
+      }
+
+      #aboutModal .about-modal-title {
+        font-size: 1.18rem;
+      }
+
+      #aboutModal .about-modal-subtitle {
+        font-size: 0.84rem;
+      }
+
+      #aboutModal .about-feature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      #aboutModal .about-modal-body {
+        padding: 14px;
+        gap: 10px;
+      }
+
+      #aboutModal .about-section-card {
+        padding: 10px 12px;
+      }
+
+      #aboutModal .about-modal-footer {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 12px 14px 14px;
+      }
+
+      #aboutModal .about-modal-actions {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      #aboutModal .about-btn {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #aboutModal .about-feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #aboutModal .about-modal-actions {
+        flex-direction: column;
+      }
+
+      #aboutModal .about-list li {
+        font-size: 0.83rem;
+      }
+    }
+
+    /* Dark Mode Toggle Styles */
+    .sidebar-menu .divider {
+      border-bottom: 1px solid var(--border-color);
+      margin: 8px 0;
+      pointer-events: none;
+      padding: 0;
+      height: 0;
+      opacity: 0.7;
+    }
+
+    .settings-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(128, 128, 128, 0.1);
+    }
+
+    .toggle-switch {
+      display: inline-block;
+      background: rgba(150, 150, 150, 0.4);
+      border-radius: 12px;
+      width: 42px;
+      height: 22px;
+      position: relative;
+      vertical-align: middle;
+      transition: background 0.25s;
+      cursor: pointer;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+      margin-left: 10px;
+    }
+    .toggle-switch:before, .toggle-switch:after { content: ""; }
+    .toggle-switch:before {
+      display: block;
+      background: #fff;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: all 0.25s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    }
+    .toggle-switch.active { background: var(--accent); }
+    .toggle-switch.active:before { left: 23px; background-color: #fff; }
+    .toggle-switch:after {
+      /* content: "☼"; */ /* Removed icon */
+      position: absolute; /* Keep position for potential future structure */
+      /* right: 5px; */
+      /* top: 2px; */
+      /* font-size: 12px; */
+      /* color: rgba(255, 255, 255, 0.4); */
+      /* font-family: sans-serif; */
+    }
+
+    /* Calculator results styling */
+    #paverSpeedTab .results-container,
+    #projLengthTab .results-container,
+    #tonnageTab .results-container {
+      margin: 15px auto;
+      max-width: 300px;
+      text-align: center;
+      width: 100%;
+    }
+
+    #paverSpeedTab .current-results,
+    #projLengthTab .current-results,
+    #tonnageTab .current-results {
+      background-color: var(--input-bg);
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--input-border);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    #paverSpeedResult,
+    #projLengthResult,
+    #tonCalcResult {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--primary) !important;
+      display: inline-block;
+      padding: 2px 10px;
+      background-color: rgba(43, 87, 151, 0.1) !important;
+      border-radius: 4px;
+      min-width: 80px;
+      text-align: right;
+    }
+
+    [data-theme="dark"] #paverSpeedResult,
+    [data-theme="dark"] #projLengthResult,
+    [data-theme="dark"] #tonCalcResult {
+      color: var(--accent) !important;
+      background-color: rgba(237, 125, 49, 0.1) !important;
+    }
+
+    #paverSpeedTab .result-row,
+    #projLengthTab .result-row,
+    #tonnageTab .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 5px;
+    }
+
+      #yieldTab .input-section,
+      #yieldTab .results-container,
+      #yieldTab .current-results,
+      #yieldTab .run-summary-results,
+      #yieldTab .day-summary-results {
+        width: 100%;
+        margin: 0 0 8px 0;
+        box-sizing: border-box;
+      }
+
+      /* Common styling for all calculator tabs */
+      #paverSpeedTab .flex-container,
+      #projLengthTab .flex-container,
+      #tonnageTab .flex-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 0;
+        width: 100%;
+      }
+
+      #paverSpeedTab .input-section,
+      #projLengthTab .input-section,
+      #tonnageTab .input-section {
+        padding: 8px;
+        margin: 0 0 5px 0;
+        background-color: var(--input-bg);
+        border-radius: 5px;
+        border: 1px solid var(--input-border);
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      #paverSpeedTab .results-container,
+      #projLengthTab .results-container,
+      #tonnageTab .results-container {
+        margin: 10px auto; /* Reduced margin */
+      }
+
+      #paverSpeedTab,
+      #projLengthTab,
+      #tonnageTab {
+        padding: 3px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      #paverSpeedTab h2,
+      #projLengthTab h2,
+      #tonnageTab h2 {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+        text-align: center;
+        width: 100%;
+      }
+
+      #paverSpeedTab h3,
+      #projLengthTab h3,
+      #tonnageTab h3 {
+        font-size: 0.9rem;
+        margin: 0 0 5px 0;
+        text-align: center;
+        width: 100%;
+      }
+
+      /* Create two columns for input fields in calculator tabs */
+      #paverSpeedTab .input-grid,
+      #projLengthTab .input-grid,
+      #tonnageTab .input-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        width: 100%;
+      }
+
+      #paverSpeedTab .form-group,
+      #projLengthTab .form-group,
+      #tonnageTab .form-group {
+        margin-bottom: 5px;
+        width: 100%;
+      }
+
+      #paverSpeedTab .form-group label,
+      #projLengthTab .form-group label,
+      #tonnageTab .form-group label {
+        font-size: 0.75rem;
+        margin-bottom: 3px;
+        display: block;
+      }
+
+      #paverSpeedTab .form-group input,
+      #projLengthTab .form-group input,
+      #tonnageTab .form-group input {
+        font-size: 0.8rem;
+        padding: 5px;
+        height: 2.2em;
+        width: 100%;
+        box-sizing: border-box;
+        min-width: 0;
+      }
+
+      #paverSpeedResult,
+      #projLengthResult,
+      #tonCalcResult {
+        font-size: 1.2rem; /* Slightly smaller on mobile */
+      }
+
+
+    @media (max-width: 360px) { /* Stricter rules for very small screens */
+      /* Single column input grid */
+      .input-grid,
+      #paverSpeedTab .input-grid,
+      #projLengthTab .input-grid,
+      #tonnageTab .input-grid {
+        grid-template-columns: 1fr;
+      }
+
+       .form-group input {
+        font-size: 0.75rem;
+        padding: 3px;
+      }
+       .form-group label {
+        font-size: 0.7rem;
+      }
+
+       .results-container { gap: 5px; }
+       .current-results, .run-summary-results, .day-summary-results { padding: 6px; margin-bottom: 5px;}
+       .result-row { font-size: 0.75rem;}
+
+       h2 { font-size: 0.9rem; }
+       .action-btn { font-size: 0.85rem; padding: 6px 10px; min-width: 100px;}
+
+        /* Smaller table fonts */
+        .truck-data-table th,
+        .truck-data-table td {
+          padding: 3px;
+          font-size: 0.7rem;
+        }
+        .truck-data-table tfoot td {
+          font-size: 0.75rem;
+        }
+         .delete-btn { font-size: 1rem;}
+    }
+
+    /* New style: shrink table to half its size and center it */
+    /* (Removing this duplicated style section) */
+
+    /* Add this at the end of the style section to ensure it overrides all other table styles */
+    #truckDataTable, #archiveDataTable {
+      width: 80% !important; /* Consistent width for both tables */
+      min-width: unset !important;
+      display: inline-block !important;
+      margin: 0 auto !important;
+    }
+    
+    @media (max-width: 768px) {
+      #truckDataTable, #archiveDataTable {
+        width: 95% !important; /* Almost full width on mobile */
+      }
+    }
+
+    /* Remove this duplicate rule */
+    /* Ensure archive data table has the same properties */
+    /* #archiveDataTable {
+      width: 80% !important;
+      display: inline-block;
+      margin: 0 auto !important;
+    } */
+
+    /* Collapsible card styles */
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      padding: 10px 0;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--input-border);
+    }
+
+    .card-header h2 {
+      margin: 0;
+    }
+
+    .collapse-icon {
+      font-size: 1.2em;
+      transition: transform 0.3s ease;
+    }
+
+    .collapse-icon.collapsed {
+      transform: rotate(-90deg);
+    }
+
+    .collapsible-content {
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      max-height: 1000px;
+    }
+
+    .collapsible-content.collapsed {
+      max-height: 0;
+    }
+
+    /* Add additional CSS to reduce spacing for h2 elements in result sections */
+    .current-results h2, .run-summary-results h2, .day-summary-results h2 {
+      margin-top: 0;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+
+    /* Add styles for editable cells */
+    .truck-data-table td[contenteditable="true"] {
+      background-color: rgba(255, 255, 255, 0.1);
+      cursor: text;
+      transition: background-color 0.2s;
+      outline: 1px dotted var(--input-border);
+    }
+
+    .truck-data-table td[contenteditable="true"]:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .truck-data-table td[contenteditable="true"]:focus {
+      background-color: rgba(255, 255, 255, 0.3);
+      outline: 2px solid var(--accent);
+    }
+
+    /* Indicator for edited cells */
+    .cell-edited {
+      position: relative;
+    }
+
+    .cell-edited::after {
+      content: '*';
+      position: absolute;
+      top: 0;
+      right: 3px;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    /* Style for editable data tables */
+    .editable-mode-active .truck-data-table td:not(.non-editable) {
+      cursor: text;
+    }
+
+    /* Style for editable remarks */
+    .editable-remarks {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 2px 4px;
+      border-radius: 3px;
+      cursor: text;
+      transition: background-color 0.2s;
+      outline: 1px dotted var(--input-border);
+      display: inline-block;
+      min-width: 50px;
+    }
+
+    .editable-remarks:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .editable-remarks:focus {
+      background-color: rgba(255, 255, 255, 0.3);
+      outline: 2px solid var(--accent);
+    }
+
+    .editable-remarks.cell-edited {
+      position: relative;
+    }
+
+    .editable-remarks.cell-edited::after {
+      content: '*';
+      position: absolute;
+      top: 0;
+      right: 3px;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    /* Save changes button */
+    .edit-controls {
+      display: none; /* Hidden by default */
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    /* Show controls for current run when dataTab is editable */
+    #dataTab.editable-mode-active > .edit-controls:not(#archiveEditControls) {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* Show controls for archive modal when its content is editable */
+    .archive-modal-content.editable-mode-active #archiveEditControls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      /* Remove margin-top since we're adding it inline */
+    }
+
+
+    .editable-mode-active .edit-controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* Disabled status style for editable mode button */
+    .btn-editable-mode[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* iPhone-first layout overrides */
+    .mobile-tab-bar {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 90;
+      padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+      background-color: var(--card-bg);
+      border-top: 1px solid var(--border-color);
+      box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.12);
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .mobile-tab-btn {
+      min-height: 44px;
+      margin: 0;
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      padding: 6px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .mobile-tab-main {
+      display: block;
+      line-height: 1.1;
+    }
+
+    .mobile-tab-btn.active {
+      background-color: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    #truckDataCards,
+    #archiveDataCards {
+      display: none;
+    }
+
+    .table-mobile-guide {
+      display: none;
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--input-border);
+      background: rgba(68, 114, 196, 0.08);
+      color: var(--text-color);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    [data-theme="dark"] .table-mobile-guide {
+      background: rgba(237, 125, 49, 0.1);
+    }
+
+    .mobile-run-separator {
+      border-radius: 10px;
+      border: 1px solid var(--secondary);
+      background-color: rgba(68, 114, 196, 0.12);
+      padding: 8px 10px;
+      margin-top: 8px;
+    }
+
+    .mobile-run-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .mobile-run-remarks {
+      margin-top: 4px;
+      font-size: 0.76rem;
+      color: var(--text-color);
+      opacity: 0.85;
+    }
+
+    .truck-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    .truck-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .truck-card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .truck-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px 10px;
+    }
+
+    .truck-card-row {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .truck-card-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      opacity: 0.7;
+    }
+
+    .truck-card-value {
+      font-size: 0.82rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-delete-btn {
+      width: 36px;
+      min-height: 36px;
+      border: 1px solid rgba(217, 83, 79, 0.35);
+      border-radius: 10px;
+      background-color: rgba(217, 83, 79, 0.08);
+      color: var(--danger);
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      margin: 0;
+      padding: 0;
+    }
+
+    .mobile-empty-state {
+      border: 1px dashed var(--input-border);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      font-size: 0.86rem;
+      opacity: 0.8;
+      margin-top: 10px;
+      background-color: var(--input-bg);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 6px;
+      }
+
+      .container {
+        min-height: calc(100dvh - 12px);
+        padding: 8px 8px calc(var(--mobile-nav-height) + 18px + env(safe-area-inset-bottom));
+        border-radius: 10px;
+      }
+
+      .tab-content {
+        padding: 4px;
+      }
+
+      #yieldTab .input-grid,
+      #paverSpeedTab .input-grid,
+      #projLengthTab .input-grid,
+      #tonnageTab .input-grid {
+        grid-template-columns: 1fr !important;
+        gap: 8px;
+      }
+
+      #yieldTab .button-group {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      #yieldTab .button-group .action-btn {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .sidebar-menu li.primary-nav-item {
+        display: none;
+      }
+
+      .mobile-tab-bar {
+        display: grid;
+      }
+
+      #dataTab > .data-table-container,
+      #archiveModal .data-table-container {
+        display: none;
+      }
+
+      #dataTab #truckDataCards,
+      #archiveModal #archiveDataCards {
+        display: grid;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      #dataTab .table-mobile-guide,
+      #archiveModal .table-mobile-guide {
+        display: block;
+      }
+
+      #dataTab.editable-mode-active > .data-table-container,
+      #archiveModal .archive-modal-content.editable-mode-active .data-table-container {
+        display: block;
+      }
+
+      #dataTab.editable-mode-active #truckDataCards,
+      #archiveModal .archive-modal-content.editable-mode-active #archiveDataCards {
+        display: none;
+      }
+
+      #dataTab.editable-mode-active .table-mobile-guide,
+      #archiveModal .archive-modal-content.editable-mode-active .table-mobile-guide {
+        display: none;
+      }
+
+      #dataTab.editable-mode-active #truckDataTable,
+      #archiveModal .archive-modal-content.editable-mode-active #archiveDataTable {
+        width: 100% !important;
+      }
+
+      input, select {
+        font-size: 16px !important;
+      }
+
+      .form-group label {
+        font-size: 0.82rem !important;
+      }
+    }
+
+    .input-helper-text {
+      margin-top: 8px;
+      color: var(--text-color);
+      opacity: 0.72;
+      font-size: 0.78rem;
+      line-height: 1.3;
+    }
+
+    .mobile-snapshot {
+      display: none;
+    }
+
+    .snapshot-pill {
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      background-color: var(--input-bg);
+      padding: 8px 10px;
+      min-width: 0;
+    }
+
+    .snapshot-label {
+      display: block;
+      font-size: 0.64rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .snapshot-value {
+      display: block;
+      margin-top: 2px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    [data-theme="dark"] .snapshot-value {
+      color: var(--accent);
+    }
+
+    .entry-progress {
+      margin-top: 8px;
+      border: 1px solid var(--input-border);
+      background: rgba(68, 114, 196, 0.07);
+      border-radius: 10px;
+      padding: 8px 9px;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .entry-progress-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(43, 87, 151, 0.15);
+    }
+
+    .entry-progress-fill {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #4472c4, #1e88e5);
+      transition: width 0.2s ease;
+    }
+
+    .entry-progress-text {
+      margin-top: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-color);
+      opacity: 0.86;
+    }
+
+    .entry-progress.ready {
+      border-color: rgba(92, 184, 92, 0.5);
+      background: rgba(92, 184, 92, 0.12);
+    }
+
+    .entry-progress.ready .entry-progress-fill {
+      background: linear-gradient(90deg, #3f9d56, #5cb85c);
+    }
+
+    .history-actions,
+    .archive-actions {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .archive-filter-row {
+      margin-bottom: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .run-remarks-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      background-color: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    }
+
+    .run-remarks-modal.open {
+      display: flex;
+    }
+
+    .run-remarks-dialog {
+      width: 100%;
+      max-width: 460px;
+      background: var(--card-bg);
+      color: var(--text-color);
+      border-radius: 14px;
+      border: 1px solid var(--input-border);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+      padding: 14px;
+    }
+
+    .run-remarks-dialog h3 {
+      margin: 0 0 8px;
+      color: var(--primary);
+      font-size: 1.05rem;
+    }
+
+    .run-remarks-dialog p {
+      margin: 0 0 10px;
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+
+    .run-remarks-dialog label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.83rem;
+    }
+
+    .run-remarks-dialog textarea {
+      width: 100%;
+      resize: vertical;
+      min-height: 88px;
+      max-height: 180px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--input-border);
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      font-size: 0.95rem;
+      line-height: 1.35;
+    }
+
+    .run-remarks-error {
+      min-height: 1.1em;
+      margin-top: 6px !important;
+      margin-bottom: 4px !important;
+      color: var(--danger);
+      font-size: 0.8rem !important;
+      font-weight: 600;
+    }
+
+    .run-remarks-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible,
+    .mobile-tab-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --mobile-nav-height: 76px;
+      }
+
+      body {
+        padding-top: calc(8px + env(safe-area-inset-top));
+        background:
+          radial-gradient(120% 70% at 20% -10%, rgba(68, 114, 196, 0.18), transparent 60%),
+          radial-gradient(120% 70% at 80% -20%, rgba(237, 125, 49, 0.14), transparent 58%),
+          var(--background);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .container {
+        border-radius: 14px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+        padding: 10px 10px calc(var(--mobile-nav-height) + 20px + env(safe-area-inset-bottom));
+      }
+
+      header {
+        position: -webkit-sticky;
+        position: sticky;
+        top: var(--top-pill-offset);
+        z-index: 20;
+        height: auto;
+        min-height: 44px;
+        margin-bottom: 8px;
+        padding: 8px 10px 7px;
+        border-radius: 12px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.7));
+        backdrop-filter: blur(6px);
+      }
+
+      [data-theme="dark"] header {
+        background: linear-gradient(180deg, rgba(35, 35, 35, 0.95), rgba(28, 28, 28, 0.75));
+      }
+
+      .hamburger-menu {
+        margin-right: 0;
+      }
+
+      .hamburger-icon {
+        width: 28px;
+        height: 22px;
+      }
+
+      .hamburger-icon span:nth-child(2) { top: 9px; }
+      .hamburger-icon span:nth-child(3) { top: 18px; }
+
+      .current-date {
+        font-size: 0.86rem;
+        line-height: 1.2;
+      }
+
+      input, select {
+        min-height: 46px;
+        border-radius: 10px;
+      }
+
+      button {
+        min-height: 46px;
+      }
+
+      .action-btn {
+        min-height: 46px;
+        border-radius: 11px;
+        font-size: 0.92rem;
+      }
+
+      #yieldTab .input-section {
+        border-radius: 12px;
+        border: 1px solid var(--input-border);
+        padding: 10px;
+        overflow: hidden;
+      }
+
+      #yieldTab .results-container {
+        border: none;
+        padding: 0;
+        background: transparent;
+      }
+
+      .current-results,
+      .run-summary-results,
+      .day-summary-results {
+        border-radius: 12px;
+        border: 1px solid var(--input-border);
+        padding: 9px;
+      }
+
+      .result-row {
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 4px;
+        font-size: 0.84rem;
+      }
+
+      .result-label {
+        margin-right: 0;
+      }
+
+      .mobile-tab-bar {
+        padding: 8px 8px calc(10px + env(safe-area-inset-bottom));
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(8px);
+      }
+
+      [data-theme="dark"] .mobile-tab-bar {
+        background: rgba(24, 24, 24, 0.92);
+      }
+
+      .mobile-tab-btn {
+        min-height: 48px;
+        border-radius: 12px;
+        font-size: 0.72rem;
+        padding: 7px 4px;
+      }
+
+      .mobile-tab-btn.active {
+        transform: translateY(-1px);
+      }
+
+      #truckDataCards {
+        gap: 10px !important;
+      }
+
+      .mobile-run-separator {
+        margin-top: 10px;
+        border-radius: 12px;
+        padding: 10px 12px;
+      }
+
+      .mobile-run-title {
+        font-size: 0.84rem;
+      }
+
+      .truck-card {
+        border-radius: 14px;
+        padding: 12px;
+      }
+
+      .truck-card-grid {
+        gap: 7px 12px;
+      }
+
+      .truck-card-label {
+        font-size: 0.67rem;
+      }
+
+      .truck-card-value {
+        font-size: 0.86rem;
+      }
+
+      .card-delete-btn {
+        width: 40px;
+        min-height: 40px;
+      }
+
+      .history-actions,
+      .archive-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .history-actions .action-btn,
+      .archive-actions .action-btn {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .archive-filter-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .archive-filter-row select {
+        width: 100%;
+      }
+
+      .run-remarks-dialog {
+        border-radius: 14px;
+        padding: 12px;
+      }
+
+      .run-remarks-actions {
+        flex-direction: column-reverse;
+      }
+
+      .run-remarks-actions .action-btn {
+        width: 100%;
+      }
+
+      #dataTab h2 {
+        margin-bottom: 8px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        max-width: 520px;
+        margin: 0 auto;
+      }
+
+      .mobile-snapshot {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      #yieldTab .input-section {
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.42)),
+          var(--input-bg);
+      }
+
+      [data-theme="dark"] #yieldTab .input-section {
+        background:
+          linear-gradient(180deg, rgba(44, 44, 44, 0.72), rgba(36, 36, 36, 0.65)),
+          var(--input-bg);
+      }
+
+      #yieldTab .card-header {
+        padding-top: 0;
+        padding-bottom: 9px;
+        margin-bottom: 8px;
+      }
+
+      #yieldTab .card-header h2 {
+        margin-bottom: 0;
+        font-size: 1rem;
+        letter-spacing: 0.01em;
+      }
+
+      #yieldTab .form-group label {
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        opacity: 0.78;
+      }
+
+      #yieldTab .form-group:focus-within label {
+        color: var(--primary);
+        opacity: 1;
+      }
+
+      [data-theme="dark"] #yieldTab .form-group:focus-within label {
+        color: var(--accent);
+      }
+
+      #yieldTab input {
+        font-weight: 600;
+      }
+
+      #yieldTab .input-helper-text {
+        margin-top: 7px;
+        font-size: 0.74rem;
+      }
+
+      #yieldTab .results-container {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      #yieldTab .flex-container {
+        gap: 12px;
+      }
+
+      #yieldTab .current-results {
+        grid-column: 1 / -1;
+      }
+
+      #yieldTab .run-summary-results,
+      #yieldTab .day-summary-results {
+        margin-bottom: 0;
+      }
+
+      .current-results h2,
+      .run-summary-results h2,
+      .day-summary-results h2 {
+        font-size: 0.82rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .result-row span:last-child {
+        font-weight: 700;
+      }
+
+      .mobile-tab-bar {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 7px;
+        padding: 7px 8px calc(12px + env(safe-area-inset-bottom));
+      }
+
+      .mobile-tab-btn {
+        flex-direction: column;
+        gap: 2px;
+        min-height: 54px;
+        padding: 6px 2px;
+      }
+
+      .mobile-tab-main {
+        font-size: 0.65rem;
+        letter-spacing: 0.02em;
+      }
+
+      .mobile-tab-btn.active {
+        box-shadow: 0 6px 14px rgba(43, 87, 151, 0.28);
+      }
+
+      [data-theme="dark"] .mobile-tab-btn.active {
+        box-shadow: 0 6px 14px rgba(237, 125, 49, 0.22);
+      }
+    }
+
+    @media (max-width: 430px) {
+      .mobile-snapshot {
+        gap: 6px;
+      }
+
+      .snapshot-pill {
+        padding: 7px 8px;
+      }
+
+      .snapshot-value {
+        font-size: 0.9rem;
+      }
+
+      .mobile-tab-main {
+        font-size: 0.6rem;
+      }
+    }
+
+    @media (min-width: 769px) {
+      #truckDataCards,
+      #archiveDataCards {
+        display: none !important;
+      }
+    }

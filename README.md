@@ -36,6 +36,15 @@ HMA Paving Control is a Progressive Web Application (PWA) designed for asphalt p
 - **Dependencies**: None (vanilla JavaScript)
 - **Service Worker**: Included for offline capability and updates
 
+## Code Structure
+- `index.html`: App markup and module/script wiring
+- `assets/css/main.css`: All app styling and responsive rules
+- `assets/js/state-and-init.js`: Shared state, DOM references, app bootstrap
+- `assets/js/storage-and-run.js`: Date handling, persistence, run lifecycle, core yield entry flow
+- `assets/js/table-archive-export.js`: Table/card rendering, archive views, Excel export
+- `assets/js/calculators-ui.js`: Secondary calculators, tab/sidebar/theme/touch utilities, PWA registration
+- `assets/js/edit-mode.js`: Edit-mode logic for current-day and archived records
+
 ## Installation
 1. Serve the HTML file through a web server (e.g., `python -m http.server 8000`)
 2. Access via browser at `http://localhost:8000`
