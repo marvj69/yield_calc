@@ -244,7 +244,6 @@
     // Action triggered by "Start New Run" button
     async function startNewRun() {
       let remarks = 'N/A';
-      const archivedLoadCount = currentRunData.length;
 
       if (currentRunData.length > 0) {
           const firstLoad = currentRunData[0]?.loadNumber || '?';
@@ -288,10 +287,6 @@
       // Clear last action for undo
       lastAction = { type: null, data: null };
       checkUndoButtonState();
-
-      window.HMAAnalytics?.trackEvent('run_started', {
-          archived_loads: archivedLoadCount > 0 ? 'yes' : 'no'
-      });
 
       console.log("New run started on", currentDate);
     }
@@ -389,7 +384,6 @@
 
       saveTruckButton.innerHTML = 'Save Truck Data'; // Restore button text
       truckNumberInput.focus();
-      window.HMAAnalytics?.trackEvent('truck_load_saved');
     }
 
     function resetFormForNextTruck() {

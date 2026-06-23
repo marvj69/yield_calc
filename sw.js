@@ -1,10 +1,9 @@
 // sw.js
-const CACHE_NAME = 'asphalt-yield-calculator-v1.2.8';
+const CACHE_NAME = 'asphalt-yield-calculator-v1.2.7';
 const urlsToCache = [
  "./", // Root path
   "./index.html",
   "./assets/css/main.css",
-  "./assets/js/analytics.js",
   "./assets/js/state-and-init.js",
   "./assets/js/storage-and-run.js",
   "./assets/js/table-archive-export.js",
@@ -24,20 +23,10 @@ self.addEventListener('install', event => {
         return cache.addAll(urlsToCache);
       })
   );
-  self.skipWaiting();
 });
 
 // Fetch event: Serve cached content when offline
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') {
-    return;
-  }
-
-  const requestUrl = new URL(event.request.url);
-  if (requestUrl.origin !== self.location.origin) {
-    return;
-  }
-
   event.respondWith(
     caches.match(event.request)
       .then(response => {
@@ -61,5 +50,4 @@ self.addEventListener('activate', event => {
       );
     })
   );
-  self.clients.claim();
 });
