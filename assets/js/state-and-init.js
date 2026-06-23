@@ -44,7 +44,7 @@
     const calculatedLengthInput = document.getElementById('calculatedLength');
     // Buttons
     const saveTruckButton = document.getElementById('saveTruckButton');
-    const startNewRunButton = document.getElementById('startNewRunButton'); // Renamed ID
+    const startNewRunButton = document.getElementById('startNewRunButton') || document.getElementById('resetButton'); // Renamed ID
     const undoButton = document.getElementById('undoButton');
     // Current Truck Results Display
     const areaResult = document.getElementById('areaResult');
@@ -58,10 +58,10 @@
     const runAverageYield = document.getElementById('runAverageYield');
     const runTotalLength = document.getElementById('runTotalLength'); // NEW
     // Day Summary Display
-    const dayTotalTrucks = document.getElementById('dayTotalTrucks'); // Renamed ID
-    const dayTotalArea = document.getElementById('dayTotalArea');     // Renamed ID
-    const dayTotalWeight = document.getElementById('dayTotalWeight');   // Renamed ID
-    const dayAverageYield = document.getElementById('dayAverageYield'); // Renamed ID
+    const dayTotalTrucks = document.getElementById('dayTotalTrucks') || document.getElementById('totalTrucks'); // Renamed ID
+    const dayTotalArea = document.getElementById('dayTotalArea') || document.getElementById('totalArea');     // Renamed ID
+    const dayTotalWeight = document.getElementById('dayTotalWeight') || document.getElementById('totalWeight');   // Renamed ID
+    const dayAverageYield = document.getElementById('dayAverageYield') || document.getElementById('averageYield'); // Renamed ID
     const dayTotalLength = document.getElementById('dayTotalLength'); // NEW
     const snapshotRunTrucks = document.getElementById('snapshotRunTrucks');
     const snapshotDayTrucks = document.getElementById('snapshotDayTrucks');
@@ -71,11 +71,11 @@
     const entryProgressText = document.getElementById('entryProgressText');
     // Current Run Data Table (in Data History Tab)
     const truckDataBody = document.getElementById('truckDataBody');
-    const runTotalLengthFoot = document.getElementById('runTotalLengthFoot'); // Renamed ID
-    const runTotalAreaFoot = document.getElementById('runTotalAreaFoot');     // Renamed ID
-    const runTotalTonnageFoot = document.getElementById('runTotalTonnageFoot'); // Renamed ID
-    const runTotalWeightFoot = document.getElementById('runTotalWeightFoot');   // Renamed ID
-    const runAvgYieldFoot = document.getElementById('runAvgYieldFoot');       // Renamed ID
+    const runTotalLengthFoot = document.getElementById('runTotalLengthFoot') || document.getElementById('totalLength'); // Renamed ID
+    const runTotalAreaFoot = document.getElementById('runTotalAreaFoot') || document.getElementById('totalAreaFoot');     // Renamed ID
+    const runTotalTonnageFoot = document.getElementById('runTotalTonnageFoot') || document.getElementById('totalTonnageFoot'); // Renamed ID
+    const runTotalWeightFoot = document.getElementById('runTotalWeightFoot') || document.getElementById('totalWeightFoot');   // Renamed ID
+    const runAvgYieldFoot = document.getElementById('runAvgYieldFoot') || document.getElementById('avgYieldFoot');       // Renamed ID
 
     // Archive Modal Elements
     const viewArchivesButton = document.getElementById('viewArchivesButton');
@@ -188,37 +188,41 @@
     }
 
     function setupEventListeners() {
+        const addListener = (element, eventName, handler) => {
+            if (element) element.addEventListener(eventName, handler);
+        };
+
         // Input listeners for real-time calculation
-        [startValueInput, endValueInput, widthInput, truckTonnageInput].forEach(el => {
+        [startValueInput, endValueInput, widthInput, truckTonnageInput].filter(Boolean).forEach(el => {
             el.addEventListener('input', () => {
                 updateLength();
                 calculateYield();
                 updateEntryProgress();
             });
         });
-        truckNumberInput.addEventListener('input', () => {
+        addListener(truckNumberInput, 'input', () => {
             checkSaveButtonState();
             updateEntryProgress();
         });
 
         // Button listeners
-        saveTruckButton.addEventListener('click', saveTruckData);
-        startNewRunButton.addEventListener('click', startNewRun); // Use renamed button/function
-        undoButton.addEventListener('click', undoLastAction);
+        addListener(saveTruckButton, 'click', saveTruckData);
+        addListener(startNewRunButton, 'click', startNewRun); // Use renamed button/function
+        addListener(undoButton, 'click', undoLastAction);
 
         // Archive listeners
-        viewArchivesButton.addEventListener('click', openArchiveModal);
-        closeArchiveModal.addEventListener('click', closeArchiveModalFunc);
-        archiveDateSelect.addEventListener('change', loadArchiveDataForSelectedDate); // Renamed handler
-        exportArchiveButton.addEventListener('click', exportArchiveToExcel); // Use renamed function
+        addListener(viewArchivesButton, 'click', openArchiveModal);
+        addListener(closeArchiveModal, 'click', closeArchiveModalFunc);
+        addListener(archiveDateSelect, 'change', loadArchiveDataForSelectedDate); // Renamed handler
+        addListener(exportArchiveButton, 'click', exportArchiveToExcel); // Use renamed function
 
         // About modal listeners
-        aboutButton.addEventListener('click', openAboutModal);
-        closeAboutModal.addEventListener('click', closeAboutModalFunc);
-        closeAboutButton.addEventListener('click', closeAboutModalFunc);
+        addListener(aboutButton, 'click', openAboutModal);
+        addListener(closeAboutModal, 'click', closeAboutModalFunc);
+        addListener(closeAboutButton, 'click', closeAboutModalFunc);
         
         // Export data button listener
-        exportDataButton.addEventListener('click', exportTodayDataToExcel);
+        addListener(exportDataButton, 'click', exportTodayDataToExcel);
 
         // Modal closing on background click
         window.addEventListener('click', function(event) {
@@ -226,8 +230,8 @@
             if (event.target == aboutModal) closeAboutModalFunc();
             if (settingsModal && event.target == settingsModal) closeSettingsModalFunc(); // Close settings modal on overlay click
         });
-        document.querySelector('#archiveModal > .archive-modal-content').addEventListener('click', e => e.stopPropagation());
-        document.querySelector('#aboutModal > .archive-modal-content').addEventListener('click', e => e.stopPropagation());
+        document.querySelector('#archiveModal > .archive-modal-content')?.addEventListener('click', e => e.stopPropagation());
+        document.querySelector('#aboutModal > .archive-modal-content')?.addEventListener('click', e => e.stopPropagation());
         const settingsModalContent = document.querySelector('#settingsModal > .archive-modal-content');
         if (settingsModalContent) {
             settingsModalContent.addEventListener('click', e => e.stopPropagation()); // Prevent closing settings modal when clicking inside content
@@ -235,9 +239,9 @@
 
 
         // Additional Calculator listeners
-        [paverProdRate, paverWidth, paverYield].forEach(el => el.addEventListener('input', calculatePaverSpeed));
-        [projTons, projLaneWidth, projYield].forEach(el => el.addEventListener('input', calculateProjectedLength));
-        [tonLength, tonWidth, tonDepth].forEach(el => el.addEventListener('input', calculateTonnageUsed));
+        [paverProdRate, paverWidth, paverYield].filter(Boolean).forEach(el => el.addEventListener('input', calculatePaverSpeed));
+        [projTons, projLaneWidth, projYield].filter(Boolean).forEach(el => el.addEventListener('input', calculateProjectedLength));
+        [tonLength, tonWidth, tonDepth].filter(Boolean).forEach(el => el.addEventListener('input', calculateTonnageUsed));
         setupMobileInputFlow();
 
         // Hamburger/Sidebar listeners
@@ -246,17 +250,17 @@
         const initialTabId = document.querySelector('.tab-content.active')?.id || 'yieldTab';
         setActiveTab(initialTabId);
 
-        confirmRunRemarksButton.addEventListener('click', submitRunRemarksModal);
-        cancelRunRemarksButton.addEventListener('click', () => closeRunRemarksModal(null));
-        runRemarksModal.addEventListener('click', (event) => {
+        addListener(confirmRunRemarksButton, 'click', submitRunRemarksModal);
+        addListener(cancelRunRemarksButton, 'click', () => closeRunRemarksModal(null));
+        addListener(runRemarksModal, 'click', (event) => {
             if (event.target === runRemarksModal) {
                 closeRunRemarksModal(null);
             }
         });
-        runRemarksInput.addEventListener('input', () => {
+        addListener(runRemarksInput, 'input', () => {
             runRemarksError.textContent = '';
         });
-        runRemarksInput.addEventListener('keydown', (event) => {
+        addListener(runRemarksInput, 'keydown', (event) => {
             if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
                 event.preventDefault();
                 submitRunRemarksModal();
@@ -273,12 +277,12 @@
         window.addEventListener('beforeunload', saveData); // Simple save, archiving handled by date check/startNewRun
 
         // Edit mode buttons listeners
-        editModeBtn.addEventListener('click', toggleEditMode);
-        archiveEditModeBtn.addEventListener('click', toggleArchiveEditMode);
-        saveChangesBtn.addEventListener('click', saveCurrentRunEdits);
-        cancelEditingBtn.addEventListener('click', cancelCurrentRunEdits);
-        saveArchiveChangesBtn.addEventListener('click', saveArchiveEdits);
-        cancelArchiveEditingBtn.addEventListener('click', cancelArchiveEdits);
+        addListener(editModeBtn, 'click', toggleEditMode);
+        addListener(archiveEditModeBtn, 'click', toggleArchiveEditMode);
+        addListener(saveChangesBtn, 'click', saveCurrentRunEdits);
+        addListener(cancelEditingBtn, 'click', cancelCurrentRunEdits);
+        addListener(saveArchiveChangesBtn, 'click', saveArchiveEdits);
+        addListener(cancelArchiveEditingBtn, 'click', cancelArchiveEdits);
     }
 
     function updateAllUI() {

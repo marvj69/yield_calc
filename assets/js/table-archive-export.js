@@ -1,6 +1,9 @@
     /***********************************************************
      * UI Update Functions (Summaries & Tables)
      ***********************************************************/
+    function setText(element, value) {
+      if (element) element.textContent = value;
+    }
 
     // Update the table showing the loads for the CURRENT DAY (all runs)
     function updateCurrentRunTable() {
@@ -249,31 +252,31 @@
     function updateCurrentRunTableFooter() {
       // Use day totals (all data for today)
       const totals = calculateTotals(calendarDayData);
-      runTotalLengthFoot.textContent = totals.totalLength.toFixed(2);
-      runTotalAreaFoot.textContent = totals.totalArea.toFixed(2);
-      runTotalTonnageFoot.textContent = totals.totalTonnage.toFixed(2);
-      runTotalWeightFoot.textContent = (totals.totalWeight * TONS_TO_POUNDS).toLocaleString();
-      runAvgYieldFoot.textContent = totals.avgYield.toFixed(2);
+      setText(runTotalLengthFoot, totals.totalLength.toFixed(2));
+      setText(runTotalAreaFoot, totals.totalArea.toFixed(2));
+      setText(runTotalTonnageFoot, totals.totalTonnage.toFixed(2));
+      setText(runTotalWeightFoot, (totals.totalWeight * TONS_TO_POUNDS).toLocaleString());
+      setText(runAvgYieldFoot, totals.avgYield.toFixed(2));
     }
 
     // Update the "Current Run Summary" box
     function updateCurrentRunSummary() {
         const totals = calculateTotals(currentRunData);
-        runTotalTrucks.textContent = totals.count;
-        runTotalLength.textContent = totals.totalLength.toFixed(2); // NEW
-        runTotalArea.textContent = totals.totalArea.toFixed(2);
-        runTotalWeight.textContent = `${totals.totalWeight.toFixed(2)} / ${(totals.totalWeight * TONS_TO_POUNDS).toLocaleString()} lbs`;
-        runAverageYield.textContent = totals.avgYield.toFixed(2);
+        setText(runTotalTrucks, totals.count);
+        setText(runTotalLength, totals.totalLength.toFixed(2)); // NEW
+        setText(runTotalArea, totals.totalArea.toFixed(2));
+        setText(runTotalWeight, `${totals.totalWeight.toFixed(2)} / ${(totals.totalWeight * TONS_TO_POUNDS).toLocaleString()} lbs`);
+        setText(runAverageYield, totals.avgYield.toFixed(2));
     }
 
     // Update the "Day Summary" box (using calendar day data)
     function updateDaySummary() {
         const totals = calculateTotals(calendarDayData);
-        dayTotalTrucks.textContent = totals.count;
-        dayTotalLength.textContent = totals.totalLength.toFixed(2); // NEW
-        dayTotalArea.textContent = totals.totalArea.toFixed(2);
-        dayTotalWeight.textContent = `${totals.totalWeight.toFixed(2)} / ${(totals.totalWeight * TONS_TO_POUNDS).toLocaleString()} lbs`;
-        dayAverageYield.textContent = totals.avgYield.toFixed(2);
+        setText(dayTotalTrucks, totals.count);
+        setText(dayTotalLength, totals.totalLength.toFixed(2)); // NEW
+        setText(dayTotalArea, totals.totalArea.toFixed(2));
+        setText(dayTotalWeight, `${totals.totalWeight.toFixed(2)} / ${(totals.totalWeight * TONS_TO_POUNDS).toLocaleString()} lbs`);
+        setText(dayAverageYield, totals.avgYield.toFixed(2));
     }
 
 
@@ -296,6 +299,7 @@
     function openArchiveModal() {
       populateArchiveDates(); // Populate dropdown with unique dates (previous days)
       archiveModal.style.display = 'block';
+      window.HMAAnalytics?.trackEvent('archive_opened');
       
       // Clear previous data and set default view
       archiveDataBody.innerHTML = ''; 
@@ -530,6 +534,9 @@
             // Trigger download
             XLSX.writeFile(workbook, filename);
             console.log("Excel file generation successful.");
+            window.HMAAnalytics?.trackEvent('data_exported', {
+                export_scope: selectedDate ? 'archive' : 'today'
+            });
 
         } catch (error) {
             console.error("Error generating Excel file:", error);
@@ -704,6 +711,9 @@
             // Trigger download
             XLSX.writeFile(workbook, filename);
             console.log("Excel file generation successful.");
+            window.HMAAnalytics?.trackEvent('data_exported', {
+                export_scope: dateToExport === todayDate ? 'today' : 'archive'
+            });
             
         } catch (error) {
             console.error("Error generating Excel file:", error);

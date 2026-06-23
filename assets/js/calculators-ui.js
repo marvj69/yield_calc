@@ -59,10 +59,12 @@
             document.documentElement.removeAttribute('data-theme');
             localStorage.setItem(THEME_KEY, 'light');
             darkModeSwitch.classList.remove('active');
+            window.HMAAnalytics?.trackEvent('theme_changed', { theme: 'light' });
         } else {
             document.documentElement.setAttribute('data-theme', 'dark');
             localStorage.setItem(THEME_KEY, 'dark');
             darkModeSwitch.classList.add('active');
+            window.HMAAnalytics?.trackEvent('theme_changed', { theme: 'dark' });
         }
     }
 
@@ -93,6 +95,8 @@
         if (window.innerWidth <= 768 && closeAfterSelect) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        window.HMAAnalytics?.trackPageView(tabId);
     }
 
     function setupMobileTabBar() {

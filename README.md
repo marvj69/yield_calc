@@ -35,6 +35,7 @@ HMA Paving Control is a Progressive Web Application (PWA) designed for asphalt p
 - **Storage**: LocalStorage for data persistence
 - **Dependencies**: None (vanilla JavaScript)
 - **Service Worker**: Included for offline capability and updates
+- **Analytics**: Google Analytics 4 for app usage events only
 
 ## Code Structure
 - `index.html`: App markup and module/script wiring
@@ -119,7 +120,7 @@ This project is open-source and available under the MIT License.
 
 ## Security Considerations
 - All calculations are performed client-side
-- No sensitive data is transmitted to external servers
+- Google Analytics receives app usage events, but calculation inputs, load numbers, remarks, exports, and locally stored run data are not sent
 - Data is stored locally in the browser's localStorage
 - Regular data backups recommended via CSV export
 - Clear browser data/cache to remove all stored information
